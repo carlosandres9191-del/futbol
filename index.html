@@ -6,7 +6,236 @@
 <title>Futbol Analytics · Gestión y análisis de jugadores</title>
 <meta name="description" content="Plataforma para gestionar jugadores, pruebas físicas, ficha médica y nutricional, y perfilamiento por posición." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>" />
-<link rel="stylesheet" href="css/styles.css" />
+<style>
+/* ============================================================
+   styles.css — Futbol Analytics
+   ============================================================ */
+
+:root {
+  --green-900: #0b3d24;
+  --green-700: #15803d;
+  --green-600: #16a34a;
+  --green-500: #22c55e;
+  --green-100: #dcfce7;
+  --ink-900: #0f172a;
+  --ink-800: #1e293b;
+  --ink-700: #334155;
+  --ink-500: #64748b;
+  --ink-300: #cbd5e1;
+  --ink-200: #e2e8f0;
+  --ink-100: #f1f5f9;
+  --bg: #f6f8f7;
+  --card-bg: #ffffff;
+  --red: #dc2626;
+  --amber: #d97706;
+  --blue: #2563eb;
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 16px rgba(15, 23, 42, 0.05);
+  font-size: 15px;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink-800);
+}
+
+a { color: var(--green-700); text-decoration: none; }
+.btn-link { color: var(--green-700); font-weight: 600; cursor: pointer; }
+h1, h2, h3, h4 { margin: 0 0 8px; color: var(--ink-900); }
+p { margin: 0 0 8px; line-height: 1.5; }
+.muted { color: var(--ink-500); }
+
+/* ---------- Layout ---------- */
+.app-shell { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 250px;
+  background: linear-gradient(180deg, var(--ink-900), #0a1f14 140%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 14px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  flex-shrink: 0;
+}
+.brand { display: flex; align-items: center; gap: 10px; padding: 6px 8px 20px; }
+.brand-icon { font-size: 28px; }
+.brand-title { font-weight: 700; font-size: 16px; color: #fff; }
+.brand-sub { font-size: 12px; color: #9fd8b3; }
+
+.nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.nav a {
+  color: #cfe9d8;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.nav a.active { background: var(--green-600); color: #fff; }
+
+.sidebar-footer { font-size: 12px; color: #9fb8a8; padding: 10px 8px 0; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 10px; }
+.sidebar-footer .btn-link { color: var(--green-500); font-weight: 600; }
+
+.main-col { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+.topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 24px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--ink-200);
+  position: sticky; top: 0; z-index: 5;
+}
+.topbar-title { font-weight: 700; font-size: 18px; flex: 1; }
+.icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; display: none; }
+
+.app-content { padding: 24px; max-width: 1280px; width: 100%; margin: 0 auto; }
+
+/* ---------- Cards / Grid ---------- */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--ink-200);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 10px; flex-wrap: wrap; }
+.grid { display: grid; gap: 16px; }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 900px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+.stat-card { display: flex; flex-direction: column; gap: 4px; }
+.stat-value { font-size: 30px; font-weight: 800; color: var(--green-700); }
+.stat-label { color: var(--ink-500); font-size: 13px; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 16px; border-radius: 9px; border: 1px solid transparent;
+  font-size: 14px; font-weight: 600; cursor: pointer; background: var(--ink-100); color: var(--ink-800);
+}
+.btn:hover { filter: brightness(0.97); }
+.btn-primary { background: var(--green-600); color: #fff; }
+.btn-primary:hover { background: var(--green-700); }
+.btn-outline { background: transparent; border-color: var(--ink-300); }
+.btn-danger { background: #fee2e2; color: var(--red); }
+.btn-sm { padding: 6px 12px; font-size: 13px; }
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+/* ---------- Forms ---------- */
+label { display: block; font-size: 13px; font-weight: 600; color: var(--ink-700); margin-bottom: 5px; }
+input, select, textarea {
+  width: 100%; padding: 9px 11px; border-radius: 8px; border: 1px solid var(--ink-300);
+  font-size: 14px; font-family: inherit; background: #fff; color: var(--ink-900);
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--green-500); outline-offset: 1px; border-color: var(--green-500); }
+.field { margin-bottom: 14px; }
+.form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+fieldset { border: 1px solid var(--ink-200); border-radius: var(--radius); padding: 16px; margin: 0 0 18px; }
+legend { font-weight: 700; padding: 0 8px; color: var(--green-700); }
+.help-text { font-size: 12px; color: var(--ink-500); margin-top: 4px; }
+
+/* ---------- Tables ---------- */
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--ink-200); }
+th { color: var(--ink-500); font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; }
+tr:hover td { background: var(--ink-100); }
+.table-wrap { overflow-x: auto; }
+
+/* ---------- Badges ---------- */
+.badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.badge-green { background: var(--green-100); color: var(--green-700); }
+.badge-blue { background: #dbeafe; color: var(--blue); }
+.badge-amber { background: #fef3c7; color: var(--amber); }
+.badge-red { background: #fee2e2; color: var(--red); }
+.badge-gray { background: var(--ink-100); color: var(--ink-500); }
+
+/* ---------- Player cards ---------- */
+.player-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.player-card {
+  background: var(--card-bg); border: 1px solid var(--ink-200); border-radius: var(--radius);
+  padding: 16px; text-align: center; box-shadow: var(--shadow); cursor: pointer; transition: transform .1s;
+}
+.player-card:hover { transform: translateY(-2px); border-color: var(--green-500); }
+.avatar {
+  width: 84px; height: 84px; border-radius: 50%; object-fit: cover; margin: 0 auto 10px;
+  background: var(--green-100); display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 26px; color: var(--green-700); border: 3px solid var(--green-100);
+}
+.avatar-sm { width: 40px; height: 40px; font-size: 14px; }
+.avatar-lg { width: 130px; height: 130px; font-size: 40px; }
+
+.player-name { font-weight: 700; margin-top: 6px; }
+.player-meta { font-size: 12px; color: var(--ink-500); }
+
+/* ---------- Profile header ---------- */
+.profile-header { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.profile-info h2 { margin-bottom: 2px; }
+.profile-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--ink-200); margin: 18px 0; flex-wrap: wrap; }
+.tab-btn { padding: 10px 16px; border: none; background: none; font-weight: 600; color: var(--ink-500); cursor: pointer; border-bottom: 2px solid transparent; }
+.tab-btn.active { color: var(--green-700); border-color: var(--green-600); }
+
+/* ---------- Score bar ---------- */
+.score-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.score-label { width: 180px; font-size: 13px; flex-shrink: 0; }
+.score-track { flex: 1; height: 10px; border-radius: 6px; background: var(--ink-100); overflow: hidden; }
+.score-fill { height: 100%; border-radius: 6px; background: var(--green-500); }
+.score-value { width: 42px; text-align: right; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+
+/* ---------- Modal ---------- */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(15,23,42,0.5); display: flex; align-items: center; justify-content: center;
+  z-index: 50; padding: 20px;
+}
+.modal { background: #fff; border-radius: var(--radius); padding: 22px; max-width: 480px; width: 100%; box-shadow: var(--shadow); }
+
+/* ---------- Toasts ---------- */
+#toast-host { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 100; }
+.toast {
+  background: var(--ink-900); color: #fff; padding: 12px 16px; border-radius: 9px; font-size: 13px;
+  box-shadow: var(--shadow); opacity: 0; transform: translateY(8px); transition: all .25s;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast-error { background: var(--red); }
+.toast-success { background: var(--green-700); }
+
+/* ---------- Empty state ---------- */
+.empty-state { text-align: center; padding: 50px 20px; color: var(--ink-500); }
+.empty-state .icon { font-size: 40px; margin-bottom: 10px; }
+
+/* ---------- Misc ---------- */
+.flex { display: flex; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mb-0 { margin-bottom: 0; }
+.text-right { text-align: right; }
+.searchbar { max-width: 320px; }
+.chart-wrap { max-width: 480px; margin: 0 auto; }
+.obs-box { background: var(--green-100); border: 1px solid #bbf0cf; border-radius: var(--radius); padding: 16px; color: var(--green-900); line-height: 1.6; }
+.divider { height: 1px; background: var(--ink-200); margin: 18px 0; border: none; }
+
+@media (max-width: 860px) {
+  .sidebar { position: fixed; left: -260px; z-index: 40; transition: left .2s; box-shadow: var(--shadow); }
+  .sidebar.open { left: 0; }
+  .icon-btn { display: inline-block; }
+}
+
+</style>
 </head>
 <body>
   <div class="app-shell">
@@ -58,6 +287,3095 @@
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
-  <script type="module" src="js/app.js"></script>
+  <script>
+
+/* ===== modulo: js/utils.js ===== */
+const Utils = (function () {
+
+/* ============================================================
+   utils.js — funciones auxiliares reutilizables
+   ============================================================ */
+
+function calcAge(fechaNacimientoISO, atDateISO = null) {
+  if (!fechaNacimientoISO) return null;
+  const born = new Date(fechaNacimientoISO);
+  const at = atDateISO ? new Date(atDateISO) : new Date();
+  let age = at.getFullYear() - born.getFullYear();
+  const m = at.getMonth() - born.getMonth();
+  if (m < 0 || (m === 0 && at.getDate() < born.getDate())) age--;
+  return age;
+}
+
+function calcIMC(pesoKg, tallaCm) {
+  if (!pesoKg || !tallaCm) return null;
+  const tallaM = tallaCm / 100;
+  const imc = pesoKg / (tallaM * tallaM);
+  return Math.round(imc * 10) / 10;
+}
+
+// Clasificación aproximada de IMC infantil/juvenil (referencia orientativa,
+// no diagnóstica). Ajustable desde Configuración.
+function clasificarIMC(imc) {
+  if (imc == null) return '—';
+  if (imc < 18.5) return 'Delgadez';
+  if (imc < 25) return 'Peso normal';
+  if (imc < 30) return 'Sobrepeso';
+  return 'Obesidad';
+}
+
+function formatDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d)) return iso;
+  return d.toLocaleDateString('es-CO', { year: 'numeric', month: '2-digit', day: '2-digit' });
+}
+
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+const BOOLEAN_ATTRS = new Set(['selected', 'required', 'checked', 'disabled', 'readonly', 'multiple']);
+
+function el(tag, attrs = {}, children = []) {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') node.className = v;
+    else if (k === 'html') node.innerHTML = v;
+    else if (k.startsWith('on') && typeof v === 'function') {
+      node.addEventListener(k.slice(2).toLowerCase(), v);
+    } else if (BOOLEAN_ATTRS.has(k)) {
+      if (v) node.setAttribute(k, '');
+    } else if (v !== undefined && v !== null) {
+      node.setAttribute(k, v);
+    }
+  }
+  (Array.isArray(children) ? children : [children]).forEach((c) => {
+    if (c === null || c === undefined || c === '') return;
+    const isNode = typeof c === 'object' && typeof c.nodeType === 'number';
+    node.appendChild(isNode ? c : document.createTextNode(String(c)));
+  });
+  return node;
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function downloadJSON(obj, filename) {
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function initials(nombres = '', apellidos = '') {
+  const a = (nombres || '').trim().charAt(0);
+  const b = (apellidos || '').trim().charAt(0);
+  return (a + b).toUpperCase() || '?';
+}
+
+function toast(msg, type = 'info') {
+  let host = document.getElementById('toast-host');
+  if (!host) {
+    host = document.createElement('div');
+    host.id = 'toast-host';
+    document.body.appendChild(host);
+  }
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  t.textContent = msg;
+  host.appendChild(t);
+  (typeof requestAnimationFrame === 'function' ? requestAnimationFrame : setTimeout)(() => t.classList.add('show'));
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 300);
+  }, 3200);
+}
+
+function confirmDialog(msg) {
+  return window.confirm(msg);
+}
+
+function debounce(fn, wait = 250) {
+  let t;
+  return (...args) => {
+    clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
+}
+
+function navigate(path) {
+  window.location.hash = path;
+}
+
+function scoreColor(score) {
+  if (score === null || score === undefined) return '#94a3b8';
+  if (score >= 8) return '#16a34a';
+  if (score >= 6.5) return '#22c55e';
+  if (score >= 5) return '#d97706';
+  return '#dc2626';
+}
+
+function scoreBarRow(label, value) {
+  const pct = value === null || value === undefined ? 0 : Math.max(0, Math.min(100, value * 10));
+  const color = scoreColor(value);
+  const row = el('div', { class: 'score-row' }, [
+    el('div', { class: 'score-label' }, label),
+    el('div', { class: 'score-track' }, [
+      el('div', { class: 'score-fill', style: `width:${pct}%; background:${color};` }),
+    ]),
+    el('div', { class: 'score-value' }, value === null || value === undefined ? '—' : String(value)),
+  ]);
+  return row;
+}
+
+  return { calcAge, calcIMC, clasificarIMC, formatDate, todayISO, el, fileToBase64, downloadJSON, initials, toast, confirmDialog, debounce, navigate, scoreColor, scoreBarRow };
+})();
+
+
+/* ===== modulo: js/seed.js ===== */
+const Seed = (function () {
+
+/* ============================================================
+   seed.js — Configuración por defecto de la aplicación
+   ------------------------------------------------------------
+   Los baremos numéricos (fuerza abdominal, salto vertical,
+   salto horizontal y test de Cooper) fueron transcritos de:
+     "PROTOCOLOS DE LAS PRUEBAS DE VALORACION.docx"
+   (tablas de resultados por edad, 12 a 18 años, escala de
+   puntos 0 a 10 en pasos de 0.5).
+
+   Algunas celdas del documento original tenían inconsistencias
+   de formato (comas en vez de puntos, valores sin separador de
+   miles). Se normalizaron a la unidad indicada en cada prueba.
+   La columna de 18 años en salto horizontal y Cooper venía
+   vacía en el documento original: se estimó igual al valor de
+   17 años (marcado como "estimado").
+
+   La prueba de Flexo-extensión de codo también traía su tabla
+   vacía en el documento original: se generó una escala estimada
+   a partir de la de fuerza abdominal. TODOS estos valores son
+   editables desde Configuración > Baremos dentro de la app.
+
+   Las pruebas técnico-futbolísticas de la matriz del club
+   (coordinación, conducción, potencia de golpeo, carrera con
+   pase, precisión, control de balón) y la prueba de agilidad y
+   los 30 metros no traían tabla de baremos en el documento, así
+   que se evalúan con calificación cualitativa 0-10 asignada por
+   el entrenador/preparador físico, guardando también el valor
+   crudo para seguimiento histórico.
+   ============================================================ */
+
+const POINTS = [10, 9.5, 9, 8.5, 8, 7.5, 7, 6.5, 6, 5.5, 5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1, 0.5, 0];
+const AGES = [12, 13, 14, 15, 16, 17, 18];
+
+function buildTable(valuesByAge) {
+  return { points: POINTS, ages: AGES, values: valuesByAge };
+}
+
+const BAREMOS_SEED = {
+  fuerzaAbdominal: {
+    label: 'Fuerza abdominal (repeticiones/min)',
+    unit: 'reps',
+    estimated: false,
+    table: buildTable({
+      12: [48, 47, 46, 45, 44, 43, 42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22, 20, 18, 16, 14],
+      13: [51, 50, 49, 48, 47, 46, 45, 43, 41, 39, 37, 35, 33, 31, 29, 27, 25, 23, 21, 19, 17],
+      14: [54, 53, 52, 51, 50, 49, 48, 46, 44, 42, 40, 38, 36, 35, 34, 32, 30, 28, 26, 24, 22],
+      15: [56, 55, 54, 53, 52, 51, 50, 48, 46, 44, 42, 40, 38, 37, 36, 34, 32, 30, 28, 26, 24],
+      16: [59, 58, 57, 56, 55, 54, 53, 51, 49, 47, 45, 43, 41, 39, 37, 35, 33, 31, 29, 27, 25],
+      17: [62, 61, 60, 59, 58, 57, 56, 54, 52, 50, 48, 46, 44, 42, 40, 38, 36, 34, 32, 30, 28],
+      18: [62, 61, 60, 59, 58, 57, 56, 54, 52, 50, 48, 46, 44, 42, 40, 38, 36, 34, 32, 30, 28],
+    }),
+  },
+
+  flexoExtension: {
+    label: 'Flexo-extensión de codo (repeticiones/min)',
+    unit: 'reps',
+    estimated: true, // tabla original vacía: estimada al 70% de fuerza abdominal
+    table: buildTable({
+      12: [34, 33, 32, 32, 31, 30, 29, 28, 27, 25, 24, 22, 21, 20, 18, 17, 15, 14, 13, 11, 10],
+      13: [36, 35, 34, 34, 33, 32, 32, 30, 29, 27, 26, 25, 23, 22, 20, 19, 18, 16, 15, 13, 12],
+      14: [38, 37, 36, 36, 35, 34, 34, 32, 31, 29, 28, 27, 25, 25, 24, 22, 21, 20, 18, 17, 15],
+      15: [39, 39, 38, 37, 36, 36, 35, 34, 32, 31, 29, 28, 27, 26, 25, 24, 22, 21, 20, 18, 17],
+      16: [41, 41, 40, 39, 39, 38, 37, 36, 34, 33, 32, 30, 29, 27, 26, 25, 23, 22, 20, 19, 18],
+      17: [43, 43, 42, 41, 41, 40, 39, 38, 36, 35, 34, 32, 31, 29, 28, 27, 25, 24, 22, 21, 20],
+      18: [43, 43, 42, 41, 41, 40, 39, 38, 36, 35, 34, 32, 31, 29, 28, 27, 25, 24, 22, 21, 20],
+    }),
+  },
+
+  saltoVertical: {
+    label: 'Salto vertical (cm)',
+    unit: 'cm',
+    estimated: false,
+    table: buildTable({
+      12: [45, 43, 41, 40, 38, 36, 34, 33, 31, 29, 27, 25, 24, 22, 20, 18, 16, 14, 12, 10, 10],
+      13: [55, 53, 50, 48, 46, 43, 41, 39, 36, 31, 32, 29, 27, 24, 22, 20, 17, 15, 12, 20, 9],
+      14: [53, 51, 49, 47, 45, 43, 41, 39, 37, 35, 33, 31, 29, 27, 25, 23, 21, 19, 17, 15, 11],
+      15: [55, 53, 51, 48, 46, 44, 42, 40, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 22, 19, 13],
+      16: [58, 55, 52, 50, 47, 45, 43, 41, 39, 36, 35, 34, 33, 32, 30, 28, 27, 25, 23, 20, 17],
+      17: [62, 59, 56, 54, 51, 48, 46, 44, 41, 39, 37, 36, 35, 34, 33, 31, 29, 28, 26, 24, 20],
+      18: [62, 59, 56, 54, 51, 48, 46, 44, 41, 39, 37, 36, 35, 34, 33, 31, 29, 28, 26, 24, 20],
+    }),
+  },
+
+  saltoHorizontal: {
+    label: 'Salto horizontal / longitud sin impulso (m)',
+    unit: 'm',
+    estimated: false, // (edad 18 estimada = igual a 17)
+    table: buildTable({
+      12: [2.00, 1.92, 1.85, 1.80, 1.77, 1.73, 1.70, 1.68, 1.64, 1.62, 1.60, 1.58, 1.55, 1.52, 1.51, 1.49, 1.45, 1.41, 1.35, 1.28, 1.15],
+      13: [2.35, 2.10, 2.00, 1.95, 1.88, 1.85, 1.80, 1.79, 1.75, 1.72, 1.70, 1.66, 1.66, 1.62, 1.60, 1.58, 1.54, 1.50, 1.45, 1.40, 1.32],
+      14: [2.35, 2.23, 2.16, 2.10, 2.05, 2.00, 1.94, 1.90, 1.89, 1.85, 1.82, 1.80, 1.78, 1.75, 1.70, 1.66, 1.63, 1.59, 1.50, 1.40, 1.37],
+      15: [2.61, 2.41, 2.30, 2.22, 2.19, 2.15, 2.13, 2.10, 2.07, 2.04, 2.01, 1.99, 1.97, 1.93, 1.88, 1.84, 1.80, 1.77, 1.73, 1.65, 1.49],
+      16: [2.80, 2.45, 2.33, 2.28, 2.25, 2.21, 2.20, 2.15, 2.13, 2.11, 2.09, 2.05, 2.03, 2.01, 2.00, 1.95, 1.90, 1.88, 1.81, 1.68, 1.59],
+      17: [2.96, 2.53, 2.46, 2.41, 2.35, 2.30, 2.25, 2.23, 2.20, 2.17, 2.15, 2.12, 2.10, 2.05, 2.04, 2.00, 1.99, 1.92, 1.86, 1.70, 1.63],
+      18: [2.96, 2.53, 2.46, 2.41, 2.35, 2.30, 2.25, 2.23, 2.20, 2.17, 2.15, 2.12, 2.10, 2.05, 2.04, 2.00, 1.99, 1.92, 1.86, 1.70, 1.63],
+    }),
+  },
+
+  cooper: {
+    label: 'Test de Cooper (m recorridos en 12 min)',
+    unit: 'm',
+    estimated: false, // (edad 18 estimada = igual a 17)
+    table: buildTable({
+      12: [2680, 2400, 2175, 2042, 2000, 1975, 1900, 1860, 1810, 1790, 1760, 1740, 1680, 1620, 1590, 1500, 1450, 1356, 1300, 1000, 924],
+      13: [2615, 2402, 2320, 2213, 2150, 2096, 2049, 2008, 1640, 1926, 1855, 1844, 1806, 1762, 1721, 1674, 1620, 1557, 1450, 1368, 1199],
+      14: [2686, 2473, 2391, 2284, 2221, 2167, 2120, 2079, 2035, 1997, 1955, 1915, 1877, 1833, 1792, 1745, 1691, 1628, 1521, 1439, 1414],
+      15: [2757, 2544, 2464, 2384, 2292, 2238, 2191, 2150, 2106, 2068, 2027, 1986, 1948, 1904, 1863, 1816, 1762, 1699, 1521, 1510, 1422],
+      16: [2828, 2615, 2533, 2455, 2363, 2309, 2262, 2221, 2217, 2139, 2098, 2057, 2019, 1937, 1934, 1887, 1833, 1770, 1633, 1584, 1499],
+      17: [2899, 2615, 2604, 2526, 2434, 2380, 2333, 2292, 2248, 2210, 2169, 2128, 2090, 2046, 2005, 1958, 1904, 1841, 1734, 1652, 1521],
+      18: [2899, 2615, 2604, 2526, 2434, 2380, 2333, 2292, 2248, 2210, 2169, 2128, 2090, 2046, 2005, 1958, 1904, 1841, 1734, 1652, 1521],
+    }),
+  },
+};
+
+// Definición de todas las pruebas de la matriz del club.
+// type: 'quant' -> valor crudo + baremo (cálculo automático de score 0-10)
+// type: 'qual'  -> el entrenador asigna score 0-10 directamente
+const TEST_DEFINITIONS = [
+  { key: 'fuerzaAbd', label: 'Fuerza abdominal', categoria: 'fuerza', type: 'quant', baremoKey: 'fuerzaAbdominal', unit: 'reps', direction: 'higher' },
+  { key: 'flexoExtension', label: 'Flexo-extensión de codo', categoria: 'fuerza', type: 'quant', baremoKey: 'flexoExtension', unit: 'reps', direction: 'higher' },
+  { key: 'saltoVertical', label: 'Salto vertical', categoria: 'potencia', type: 'quant', baremoKey: 'saltoVertical', unit: 'cm', direction: 'higher' },
+  { key: 'saltoHorizontal', label: 'Salto horizontal', categoria: 'potencia', type: 'quant', baremoKey: 'saltoHorizontal', unit: 'm', direction: 'higher' },
+  { key: 'cooper', label: 'Test de Cooper', categoria: 'resistencia', type: 'quant', baremoKey: 'cooper', unit: 'm', direction: 'higher' },
+  { key: 'test30m', label: 'Test de 30 metros', categoria: 'velocidad', type: 'qual', unit: 'seg', direction: 'lower' },
+  { key: 'agilidad', label: 'Prueba de agilidad', categoria: 'agilidad', type: 'qual', unit: 'seg', direction: 'lower' },
+  { key: 'coordinacion', label: 'Coordinación', categoria: 'agilidad', type: 'qual', unit: 'pts', direction: 'higher' },
+  { key: 'conduccion', label: 'Conducción de balón', categoria: 'tecnica', type: 'qual', unit: 'seg', direction: 'lower' },
+  { key: 'potenciaTiro', label: 'Potencia de golpeo/tiro', categoria: 'tecnica', type: 'qual', unit: 'pts', direction: 'higher' },
+  { key: 'carreraConPase', label: 'Carrera con pase', categoria: 'tecnica', type: 'qual', unit: 'pts', direction: 'higher' },
+  { key: 'precision', label: 'Precisión (pase/remate)', categoria: 'tecnica', type: 'qual', unit: 'pts', direction: 'higher' },
+  { key: 'controlBalon', label: 'Control de balón', categoria: 'tecnica', type: 'qual', unit: 'pts', direction: 'higher' },
+];
+
+const CATEGORIAS = {
+  fuerza: 'Fuerza',
+  potencia: 'Potencia',
+  velocidad: 'Velocidad',
+  resistencia: 'Resistencia',
+  agilidad: 'Agilidad / Coordinación',
+  tecnica: 'Técnica con balón',
+};
+
+// Perfiles de exigencia por posición (pesos que suman 1.0 por categoría).
+// Editable desde Configuración > Posiciones.
+const POSICIONES_SEED = {
+  portero: {
+    label: 'Portero',
+    weights: { fuerza: 0.15, potencia: 0.20, velocidad: 0.10, resistencia: 0.10, agilidad: 0.30, tecnica: 0.15 },
+  },
+  defensaCentral: {
+    label: 'Defensa central',
+    weights: { fuerza: 0.25, potencia: 0.20, velocidad: 0.15, resistencia: 0.15, agilidad: 0.15, tecnica: 0.10 },
+  },
+  lateral: {
+    label: 'Lateral / carrilero',
+    weights: { fuerza: 0.10, potencia: 0.10, velocidad: 0.25, resistencia: 0.20, agilidad: 0.20, tecnica: 0.15 },
+  },
+  mediocentro: {
+    label: 'Mediocentro / volante',
+    weights: { fuerza: 0.10, potencia: 0.10, velocidad: 0.15, resistencia: 0.25, agilidad: 0.15, tecnica: 0.25 },
+  },
+  extremo: {
+    label: 'Extremo / volante de ataque',
+    weights: { fuerza: 0.05, potencia: 0.15, velocidad: 0.30, resistencia: 0.10, agilidad: 0.20, tecnica: 0.20 },
+  },
+  delantero: {
+    label: 'Delantero',
+    weights: { fuerza: 0.10, potencia: 0.25, velocidad: 0.20, resistencia: 0.05, agilidad: 0.15, tecnica: 0.25 },
+  },
+};
+
+const CATEGORIAS_EDAD_SEED = [
+  { key: 'sub10', label: 'Sub-10 (8-9 años)', min: 8, max: 9 },
+  { key: 'sub12', label: 'Sub-12 (10-11 años)', min: 10, max: 11 },
+  { key: 'sub14_1213', label: 'Sub-14 (12-13 años)', min: 12, max: 13 },
+  { key: 'sub16', label: 'Sub-16 (14-15 años)', min: 14, max: 15 },
+  { key: 'sub18', label: 'Sub-18 (16-17 años)', min: 16, max: 17 },
+  { key: 'sub20', label: 'Sub-20 / mayores (18+)', min: 18, max: 99 },
+];
+
+const CLUB_INFO_SEED = {
+  nombreClub: 'Club Deportivo Cristo Rey',
+  logoBase64: '',
+};
+
+async function seedIfEmpty(DB) {
+  const baremos = await DB.getConfig('baremos');
+  if (!baremos) await DB.setConfig('baremos', BAREMOS_SEED);
+
+  const tests = await DB.getConfig('testDefinitions');
+  if (!tests) await DB.setConfig('testDefinitions', TEST_DEFINITIONS);
+
+  const posiciones = await DB.getConfig('posiciones');
+  if (!posiciones) await DB.setConfig('posiciones', POSICIONES_SEED);
+
+  const edades = await DB.getConfig('categoriasEdad');
+  if (!edades) await DB.setConfig('categoriasEdad', CATEGORIAS_EDAD_SEED);
+
+  const club = await DB.getConfig('clubInfo');
+  if (!club) await DB.setConfig('clubInfo', CLUB_INFO_SEED);
+}
+
+  return { BAREMOS_SEED, TEST_DEFINITIONS, CATEGORIAS, POSICIONES_SEED, CATEGORIAS_EDAD_SEED, CLUB_INFO_SEED, seedIfEmpty };
+})();
+
+
+/* ===== modulo: js/db.js ===== */
+const DBMod = (function () {
+/* ============================================================
+   db.js — Capa de acceso a datos (IndexedDB)
+   Toda la información de la app (jugadores, evaluaciones,
+   fichas médicas, nutricionales y configuración) vive en el
+   navegador del usuario mediante IndexedDB. No hay backend.
+   ============================================================ */
+
+const DB_NAME = 'futbolAnalyticsDB';
+const DB_VERSION = 1;
+
+const STORES = {
+  players: 'id',
+  evaluations: 'id',
+  medical: 'id',
+  nutrition: 'id',
+  config: 'key',
+};
+
+let dbPromise = null;
+
+function uid() {
+  return (
+    Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10)
+  );
+}
+
+function openDatabase() {
+  if (dbPromise) return dbPromise;
+  dbPromise = new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+
+    req.onupgradeneeded = (evt) => {
+      const db = evt.target.result;
+
+      if (!db.objectStoreNames.contains('players')) {
+        db.createObjectStore('players', { keyPath: 'id' });
+      }
+      if (!db.objectStoreNames.contains('evaluations')) {
+        const s = db.createObjectStore('evaluations', { keyPath: 'id' });
+        s.createIndex('playerId', 'playerId', { unique: false });
+      }
+      if (!db.objectStoreNames.contains('medical')) {
+        const s = db.createObjectStore('medical', { keyPath: 'id' });
+        s.createIndex('playerId', 'playerId', { unique: false });
+      }
+      if (!db.objectStoreNames.contains('nutrition')) {
+        const s = db.createObjectStore('nutrition', { keyPath: 'id' });
+        s.createIndex('playerId', 'playerId', { unique: false });
+      }
+      if (!db.objectStoreNames.contains('config')) {
+        db.createObjectStore('config', { keyPath: 'key' });
+      }
+    };
+
+    req.onsuccess = (evt) => resolve(evt.target.result);
+    req.onerror = (evt) => reject(evt.target.error);
+  });
+  return dbPromise;
+}
+
+function tx(storeName, mode = 'readonly') {
+  return openDatabase().then(
+    (db) => db.transaction(storeName, mode).objectStore(storeName)
+  );
+}
+
+function reqToPromise(req) {
+  return new Promise((resolve, reject) => {
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+/* ---------- CRUD genérico ---------- */
+
+async function addRecord(storeName, record) {
+  const store = await tx(storeName, 'readwrite');
+  if (!record.id && STORES[storeName] === 'id') record.id = uid();
+  record.createdAt = record.createdAt || new Date().toISOString();
+  record.updatedAt = new Date().toISOString();
+  await reqToPromise(store.put(record));
+  return record;
+}
+
+async function putRecord(storeName, record) {
+  const store = await tx(storeName, 'readwrite');
+  record.updatedAt = new Date().toISOString();
+  await reqToPromise(store.put(record));
+  return record;
+}
+
+async function getRecord(storeName, key) {
+  const store = await tx(storeName);
+  return reqToPromise(store.get(key));
+}
+
+async function getAllRecords(storeName) {
+  const store = await tx(storeName);
+  return reqToPromise(store.getAll());
+}
+
+async function getByIndex(storeName, indexName, value) {
+  const store = await tx(storeName);
+  const idx = store.index(indexName);
+  return reqToPromise(idx.getAll(value));
+}
+
+async function deleteRecord(storeName, key) {
+  const store = await tx(storeName, 'readwrite');
+  await reqToPromise(store.delete(key));
+}
+
+async function clearStore(storeName) {
+  const store = await tx(storeName, 'readwrite');
+  await reqToPromise(store.clear());
+}
+
+/* ---------- API específica ---------- */
+
+const DB = {
+  uid,
+
+  // Jugadores
+  addPlayer: (p) => addRecord('players', p),
+  updatePlayer: (p) => putRecord('players', p),
+  getPlayer: (id) => getRecord('players', id),
+  getAllPlayers: () => getAllRecords('players'),
+  deletePlayer: async (id) => {
+    await deleteRecord('players', id);
+    const evals = await getByIndex('evaluations', 'playerId', id);
+    for (const e of evals) await deleteRecord('evaluations', e.id);
+    const meds = await getByIndex('medical', 'playerId', id);
+    for (const m of meds) await deleteRecord('medical', m.id);
+    const nuts = await getByIndex('nutrition', 'playerId', id);
+    for (const n of nuts) await deleteRecord('nutrition', n.id);
+  },
+
+  // Evaluaciones físicas/técnicas
+  addEvaluation: (e) => addRecord('evaluations', e),
+  updateEvaluation: (e) => putRecord('evaluations', e),
+  getEvaluation: (id) => getRecord('evaluations', id),
+  getEvaluationsByPlayer: (playerId) => getByIndex('evaluations', 'playerId', playerId),
+  getAllEvaluations: () => getAllRecords('evaluations'),
+  deleteEvaluation: (id) => deleteRecord('evaluations', id),
+
+  // Ficha médica
+  addMedical: (m) => addRecord('medical', m),
+  updateMedical: (m) => putRecord('medical', m),
+  getMedicalByPlayer: (playerId) => getByIndex('medical', 'playerId', playerId),
+  getAllMedical: () => getAllRecords('medical'),
+  deleteMedical: (id) => deleteRecord('medical', id),
+
+  // Ficha nutricional
+  addNutrition: (n) => addRecord('nutrition', n),
+  updateNutrition: (n) => putRecord('nutrition', n),
+  getNutritionByPlayer: (playerId) => getByIndex('nutrition', 'playerId', playerId),
+  getAllNutrition: () => getAllRecords('nutrition'),
+  deleteNutrition: (id) => deleteRecord('nutrition', id),
+
+  // Configuración (baremos, posiciones, categorías de edad, datos del club)
+  getConfig: (key) => getRecord('config', key),
+  setConfig: (key, value) => putRecord('config', { key, value }),
+
+  // Backup / restauración completa
+  exportAll: async () => {
+    const [players, evaluations, medical, nutrition, config] = await Promise.all([
+      getAllRecords('players'),
+      getAllRecords('evaluations'),
+      getAllRecords('medical'),
+      getAllRecords('nutrition'),
+      getAllRecords('config'),
+    ]);
+    return {
+      _app: 'futbol-analytics',
+      _version: DB_VERSION,
+      _exportedAt: new Date().toISOString(),
+      players,
+      evaluations,
+      medical,
+      nutrition,
+      config,
+    };
+  },
+
+  importAll: async (data, { replace = false } = {}) => {
+    if (replace) {
+      await Promise.all(
+        ['players', 'evaluations', 'medical', 'nutrition', 'config'].map(clearStore)
+      );
+    }
+    for (const p of data.players || []) await putRecord('players', p);
+    for (const e of data.evaluations || []) await putRecord('evaluations', e);
+    for (const m of data.medical || []) await putRecord('medical', m);
+    for (const n of data.nutrition || []) await putRecord('nutrition', n);
+    for (const c of data.config || []) await putRecord('config', c);
+  },
+
+  wipeAll: async () => {
+    await Promise.all(
+      ['players', 'evaluations', 'medical', 'nutrition', 'config'].map(clearStore)
+    );
+  },
+};
+
+  return { DB };
+})();
+
+
+/* ===== modulo: js/scoring.js ===== */
+const Scoring = (function () {
+  const { CATEGORIAS } = Seed;
+
+/* ============================================================
+   scoring.js — Motor de análisis: baremos, categorías,
+   ajuste por posición y observaciones automáticas.
+   ============================================================ */
+
+
+function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function nearestAge(ages, age) {
+  if (ages.includes(age)) return age;
+  if (age < ages[0]) return ages[0];
+  if (age > ages[ages.length - 1]) return ages[ages.length - 1];
+  // por si falta algún año intermedio, tomar el más cercano
+  return ages.reduce((a, b) => (Math.abs(b - age) < Math.abs(a - age) ? b : a));
+}
+
+/**
+ * Convierte un valor crudo (ej. 42 abdominales) en un puntaje 0-10
+ * interpolando dentro del baremo correspondiente a la edad del jugador.
+ */
+function scoreFromBaremo(baremoTable, age, rawValue) {
+  if (rawValue === null || rawValue === undefined || rawValue === '') return null;
+  const val = Number(rawValue);
+  if (Number.isNaN(val)) return null;
+
+  const a = nearestAge(baremoTable.ages, Math.round(age));
+  const values = baremoTable.values[a];
+  const points = baremoTable.points;
+
+  // pares (valor, punto) ordenados ascendente por valor
+  const pairs = values.map((v, i) => [v, points[i]]).sort((x, y) => x[0] - y[0]);
+
+  if (val <= pairs[0][0]) return 0;
+  if (val >= pairs[pairs.length - 1][0]) return 10;
+
+  for (let i = 0; i < pairs.length - 1; i++) {
+    const [v0, p0] = pairs[i];
+    const [v1, p1] = pairs[i + 1];
+    if (val >= v0 && val <= v1) {
+      if (v1 === v0) return p0;
+      const t = (val - v0) / (v1 - v0);
+      return Math.round((p0 + t * (p1 - p0)) * 10) / 10;
+    }
+  }
+  return null;
+}
+
+/**
+ * Calcula el puntaje 0-10 de cada prueba de una evaluación.
+ * evaluation.tests[key] = { valor, score } (score sólo aplica a pruebas
+ * cualitativas, se respeta si ya viene asignado por el evaluador).
+ */
+function computeTestScores(evaluationTests, testDefs, baremos, age) {
+  const result = {};
+  for (const def of testDefs) {
+    const entry = evaluationTests?.[def.key];
+    if (!entry) {
+      result[def.key] = { valor: null, score: null };
+      continue;
+    }
+    if (def.type === 'quant') {
+      const baremo = baremos[def.baremoKey];
+      const score = baremo ? scoreFromBaremo(baremo.table, age, entry.valor) : null;
+      result[def.key] = { valor: entry.valor ?? null, score };
+    } else {
+      const score = entry.score === '' || entry.score === undefined ? null : Number(entry.score);
+      result[def.key] = { valor: entry.valor ?? null, score: score === null || Number.isNaN(score) ? null : clamp(score, 0, 10) };
+    }
+  }
+  return result;
+}
+
+/** Promedia los puntajes de las pruebas dentro de cada categoría física/técnica. */
+function computeCategoryScores(testScores, testDefs) {
+  const buckets = {};
+  for (const def of testDefs) {
+    const s = testScores[def.key]?.score;
+    if (s === null || s === undefined) continue;
+    (buckets[def.categoria] ||= []).push(s);
+  }
+  const categoryScores = {};
+  for (const cat of Object.keys(CATEGORIAS)) {
+    const arr = buckets[cat];
+    categoryScores[cat] = arr && arr.length ? Math.round((arr.reduce((a, b) => a + b, 0) / arr.length) * 10) / 10 : null;
+  }
+  return categoryScores;
+}
+
+function computeGlobalScore(categoryScores) {
+  const vals = Object.values(categoryScores).filter((v) => v !== null && v !== undefined);
+  if (!vals.length) return null;
+  return Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10;
+}
+
+/**
+ * Calcula el índice de idoneidad (0-10) del jugador para cada posición,
+ * a partir de los puntajes por categoría y los pesos configurados.
+ * Devuelve un ranking ordenado de mayor a menor afinidad.
+ */
+function computePositionFit(categoryScores, posiciones) {
+  const ranking = [];
+  for (const [key, pos] of Object.entries(posiciones)) {
+    let sum = 0;
+    let weightUsed = 0;
+    for (const [cat, weight] of Object.entries(pos.weights)) {
+      const score = categoryScores[cat];
+      if (score === null || score === undefined) continue;
+      sum += score * weight;
+      weightUsed += weight;
+    }
+    const fit = weightUsed > 0 ? Math.round((sum / weightUsed) * 10) / 10 : null;
+    ranking.push({ key, label: pos.label, fit });
+  }
+  return ranking.sort((a, b) => (b.fit ?? -1) - (a.fit ?? -1));
+}
+
+function nivelTexto(score) {
+  if (score === null || score === undefined) return 'sin datos';
+  if (score >= 9) return 'excelente';
+  if (score >= 7.5) return 'muy bueno';
+  if (score >= 6) return 'bueno';
+  if (score >= 4.5) return 'a mejorar';
+  return 'bajo';
+}
+
+/**
+ * Genera observaciones automáticas en lenguaje natural: fortalezas,
+ * aspectos a trabajar por disciplina y sugerencia de posición.
+ */
+function generateObservations({ categoryScores, testScores, testDefs, positionFit, imc, imcClasificacion, nombre }) {
+  const lines = [];
+  const catEntries = Object.entries(categoryScores).filter(([, v]) => v !== null);
+
+  if (catEntries.length) {
+    const sorted = [...catEntries].sort((a, b) => b[1] - a[1]);
+    const fuertes = sorted.filter((e) => e[1] >= 7);
+    const debiles = sorted.filter((e) => e[1] < 6);
+
+    if (fuertes.length) {
+      lines.push(
+        `Fortalezas: ${fuertes.map(([c, v]) => `${CATEGORIAS[c]} (${v}/10, ${nivelTexto(v)})`).join(', ')}.`
+      );
+    }
+    if (debiles.length) {
+      lines.push(
+        `Aspectos a trabajar: ${debiles.map(([c, v]) => `${CATEGORIAS[c]} (${v}/10, ${nivelTexto(v)})`).join(', ')}.`
+      );
+    } else if (fuertes.length) {
+      lines.push('No se detectan categorías por debajo de 6/10: perfil físico-técnico equilibrado.');
+    }
+  } else {
+    lines.push('Aún no hay suficientes pruebas registradas para generar un diagnóstico por categoría.');
+  }
+
+  // pruebas individuales más bajas (para plan de entrenamiento)
+  const testEntries = testDefs
+    .map((d) => ({ label: d.label, score: testScores[d.key]?.score }))
+    .filter((t) => t.score !== null && t.score !== undefined)
+    .sort((a, b) => a.score - b.score);
+  if (testEntries.length) {
+    const peores = testEntries.slice(0, 3).filter((t) => t.score < 7);
+    if (peores.length) {
+      lines.push(
+        `Pruebas prioritarias para el plan de mejora: ${peores.map((t) => `${t.label} (${t.score}/10)`).join(', ')}.`
+      );
+    }
+  }
+
+  if (imc !== null && imc !== undefined) {
+    lines.push(`Composición corporal: IMC ${imc} (${imcClasificacion}).`);
+  }
+
+  if (positionFit && positionFit.length && positionFit[0].fit !== null) {
+    const top = positionFit.filter((p) => p.fit !== null).slice(0, 2);
+    lines.push(
+      `Según el perfil físico-técnico actual, las posiciones con mayor afinidad son: ${top
+        .map((p) => `${p.label} (${p.fit}/10)`)
+        .join(' y ')}.`
+    );
+  }
+
+  return lines.join(' ');
+}
+
+  return { scoreFromBaremo, computeTestScores, computeCategoryScores, computeGlobalScore, computePositionFit, generateObservations };
+})();
+
+
+/* ===== modulo: js/views/dashboard.js ===== */
+const ViewDashboard = (function () {
+  const { DB } = DBMod;
+  const { el, calcAge, formatDate, initials, navigate } = Utils;
+
+/* ============================================================
+   views/dashboard.js — Panel general del club
+   ============================================================ */
+
+
+
+async function renderDashboard(container) {
+  const [players, evaluations, medical, posicionesCfg, edadesCfg] = await Promise.all([
+    DB.getAllPlayers(),
+    DB.getAllEvaluations(),
+    DB.getAllMedical(),
+    DB.getConfig('posiciones'),
+    DB.getConfig('categoriasEdad'),
+  ]);
+  const posiciones = posicionesCfg?.value || {};
+  const edades = edadesCfg?.value || [];
+
+  const activos = players.filter((p) => p.estado !== 'inactivo');
+  const sinEvaluar = players.filter((p) => !evaluations.some((e) => e.playerId === p.id));
+  const noAptos = medical.filter((m) => m.aptitud === 'no_apto');
+  const lesionesActivas = medical.filter((m) => m.tipo === 'lesion' && m.estadoLesion && m.estadoLesion !== 'recuperado');
+
+  container.appendChild(
+    el('div', { class: 'grid grid-4' }, [
+      statCard(players.length, 'Jugadores registrados'),
+      statCard(activos.length, 'Activos'),
+      statCard(evaluations.length, 'Evaluaciones físicas'),
+      statCard(lesionesActivas.length, 'Lesiones activas / en recuperación'),
+    ])
+  );
+
+  const row = el('div', { class: 'grid grid-2' });
+
+  // Distribución por categoría de edad
+  const catCard = el('div', { class: 'card' }, [el('h3', {}, 'Jugadores por categoría')]);
+  if (!players.length) {
+    catCard.appendChild(el('p', { class: 'muted' }, 'Sin jugadores registrados aún.'));
+  } else {
+    const counts = {};
+    players.forEach((p) => {
+      const key = p.categoriaEdad || autoCategoria(p, edades);
+      counts[key] = (counts[key] || 0) + 1;
+    });
+    Object.entries(counts).forEach(([k, count]) => {
+      const label = edades.find((e) => e.key === k)?.label || 'Sin categoría';
+      const pct = Math.round((count / players.length) * 100);
+      catCard.appendChild(
+        el('div', { class: 'score-row' }, [
+          el('div', { class: 'score-label' }, label),
+          el('div', { class: 'score-track' }, el('div', { class: 'score-fill', style: `width:${pct}%;` })),
+          el('div', { class: 'score-value' }, String(count)),
+        ])
+      );
+    });
+  }
+  row.appendChild(catCard);
+
+  // Alertas
+  const alertCard = el('div', { class: 'card' }, [el('h3', {}, 'Alertas y pendientes')]);
+  const alerts = [];
+  if (sinEvaluar.length) alerts.push({ text: `${sinEvaluar.length} jugador(es) sin ninguna evaluación física registrada`, type: 'badge-amber', action: () => navigate('/jugadores') });
+  if (noAptos.length) alerts.push({ text: `${noAptos.length} jugador(es) marcados como "no apto" médicamente`, type: 'badge-red', action: () => navigate('/medico') });
+  if (lesionesActivas.length) alerts.push({ text: `${lesionesActivas.length} lesión(es) activas o en recuperación`, type: 'badge-amber', action: () => navigate('/medico') });
+  if (!alerts.length) {
+    alertCard.appendChild(el('p', { class: 'muted' }, 'Sin alertas pendientes. Todo al día ✅'));
+  } else {
+    alerts.forEach((a) => {
+      alertCard.appendChild(
+        el('div', { class: 'flex-between mt-8', style: 'cursor:pointer;', onClick: a.action }, [
+          el('span', {}, a.text),
+          el('span', { class: `badge ${a.type}` }, '→'),
+        ])
+      );
+    });
+  }
+  row.appendChild(alertCard);
+
+  container.appendChild(row);
+
+  // Últimas evaluaciones
+  const recentCard = el('div', { class: 'card' });
+  recentCard.appendChild(
+    el('div', { class: 'card-header' }, [
+      el('h3', { class: 'mb-0' }, 'Últimas evaluaciones'),
+      el('button', { class: 'btn btn-outline btn-sm', onClick: () => navigate('/evaluaciones') }, 'Ver todas'),
+    ])
+  );
+  const recent = [...evaluations].sort((a, b) => (b.fecha || '').localeCompare(a.fecha || '')).slice(0, 6);
+  if (!recent.length) {
+    recentCard.appendChild(
+      el('div', { class: 'empty-state' }, [
+        el('div', { class: 'icon' }, '⚽'),
+        el('p', {}, 'Empieza registrando tu primer jugador y su primera evaluación física.'),
+        el('button', { class: 'btn btn-primary', onClick: () => navigate('/jugadores/nuevo') }, '+ Nuevo jugador'),
+      ])
+    );
+  } else {
+    const byId = Object.fromEntries(players.map((p) => [p.id, p]));
+    const wrap = el('div', { class: 'table-wrap' });
+    const table = el('table', {}, [
+      el('thead', {}, el('tr', {}, ['Jugador', 'Fecha', 'Score global', 'Posición sugerida', ''].map((h) => el('th', {}, h)))),
+    ]);
+    const tbody = el('tbody');
+    recent.forEach((ev) => {
+      const p = byId[ev.playerId];
+      tbody.appendChild(
+        el('tr', { style: 'cursor:pointer;', onClick: () => navigate(`/evaluaciones/${ev.id}`) }, [
+          el('td', {}, p ? `${p.nombres} ${p.apellidos}` : '—'),
+          el('td', {}, formatDate(ev.fecha)),
+          el('td', {}, ev.scoreFisicoGlobal != null ? `${ev.scoreFisicoGlobal}/10` : '—'),
+          el('td', {}, ev.positionFit?.[0]?.label || '—'),
+          el('td', { class: 'text-right' }, el('span', { class: 'btn-link' }, 'Ver →')),
+        ])
+      );
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+    recentCard.appendChild(wrap);
+  }
+  container.appendChild(recentCard);
+}
+
+function statCard(value, label) {
+  return el('div', { class: 'card stat-card' }, [
+    el('div', { class: 'stat-value' }, String(value)),
+    el('div', { class: 'stat-label' }, label),
+  ]);
+}
+
+function autoCategoria(player, edades) {
+  const age = calcAge(player.fechaNacimiento);
+  if (age == null) return 'sin-definir';
+  const match = edades.find((c) => age >= c.min && age <= c.max);
+  return match ? match.key : 'sin-definir';
+}
+
+  return { renderDashboard };
+})();
+
+
+/* ===== modulo: js/views/players.js ===== */
+const ViewPlayers = (function () {
+  const { DB } = DBMod;
+  const { el, calcAge, formatDate, fileToBase64, initials, toast, navigate, confirmDialog, debounce } = Utils;
+
+/* ============================================================
+   views/players.js — Listado y formulario (alta/edición) de
+   jugadores, incluyendo carga de foto.
+   ============================================================ */
+
+
+
+async function renderPlayersList(container) {
+  const [players, posicionesCfg, edadesCfg] = await Promise.all([
+    DB.getAllPlayers(),
+    DB.getConfig('posiciones'),
+    DB.getConfig('categoriasEdad'),
+  ]);
+  const posiciones = posicionesCfg?.value || {};
+  const edades = edadesCfg?.value || [];
+
+  const card = el('div', { class: 'card' });
+  const header = el('div', { class: 'card-header' }, [
+    el('h2', {}, `Jugadores (${players.length})`),
+    el('button', { class: 'btn btn-primary', onClick: () => navigate('/jugadores/nuevo') }, '+ Nuevo jugador'),
+  ]);
+
+  const searchInput = el('input', {
+    type: 'search',
+    placeholder: 'Buscar por nombre o apellido…',
+    class: 'searchbar',
+  });
+  const catSelect = el('select', {}, [
+    el('option', { value: '' }, 'Todas las categorías'),
+    ...edades.map((c) => el('option', { value: c.key }, c.label)),
+  ]);
+  const posSelect = el('select', {}, [
+    el('option', { value: '' }, 'Todas las posiciones'),
+    ...Object.entries(posiciones).map(([k, p]) => el('option', { value: k }, p.label)),
+  ]);
+
+  const filters = el('div', { class: 'form-row', style: 'margin-bottom:16px;' }, [
+    el('div', {}, [searchInput]),
+    catSelect,
+    posSelect,
+  ]);
+
+  const grid = el('div', { class: 'player-grid' });
+
+  function draw() {
+    const q = (searchInput.value || '').toLowerCase();
+    const fc = catSelect.value || '';
+    const fp = posSelect.value || '';
+
+    const filtered = players.filter((p) => {
+      const nombre = `${p.nombres || ''} ${p.apellidos || ''}`.toLowerCase();
+      if (q && !nombre.includes(q)) return false;
+      if (fc && p.categoriaEdad !== fc) return false;
+      if (fp && p.posicionPrincipal !== fp) return false;
+      return true;
+    });
+
+    grid.innerHTML = '';
+    if (!filtered.length) {
+      grid.appendChild(
+        el('div', { class: 'empty-state' }, [
+          el('div', { class: 'icon' }, '🧑‍🤝‍🧑'),
+          el('p', {}, players.length ? 'Ningún jugador coincide con el filtro.' : 'Aún no has registrado jugadores.'),
+          !players.length
+            ? el('button', { class: 'btn btn-primary', onClick: () => navigate('/jugadores/nuevo') }, '+ Registrar el primero')
+            : null,
+        ])
+      );
+      return;
+    }
+
+    filtered
+      .sort((a, b) => `${a.apellidos}${a.nombres}`.localeCompare(`${b.apellidos}${b.nombres}`))
+      .forEach((p) => {
+        const age = calcAge(p.fechaNacimiento);
+        const posLabel = posiciones[p.posicionPrincipal]?.label || 'Sin posición';
+        grid.appendChild(
+          el('div', { class: 'player-card', onClick: () => navigate(`/jugadores/${p.id}`) }, [
+            p.fotoBase64
+              ? el('img', { class: 'avatar', src: p.fotoBase64, alt: p.nombres })
+              : el('div', { class: 'avatar' }, initials(p.nombres, p.apellidos)),
+            el('div', { class: 'player-name' }, `${p.nombres || ''} ${p.apellidos || ''}`),
+            el('div', { class: 'player-meta' }, [age !== null ? `${age} años · ` : '', posLabel]),
+            el('div', { class: 'profile-tags' }, [
+              p.club ? el('span', { class: 'badge badge-gray' }, p.club) : null,
+              p.estado === 'inactivo' ? el('span', { class: 'badge badge-red' }, 'Inactivo') : el('span', { class: 'badge badge-green' }, 'Activo'),
+            ]),
+          ])
+        );
+      });
+  }
+
+  card.append(header, filters, grid);
+  container.appendChild(card);
+
+  draw();
+  searchInput.addEventListener('input', debounce(draw, 150));
+  catSelect.addEventListener('change', draw);
+  posSelect.addEventListener('change', draw);
+}
+
+async function renderPlayerForm(container, playerId) {
+  const isEdit = !!playerId;
+  const [player, posicionesCfg, edadesCfg] = await Promise.all([
+    isEdit ? DB.getPlayer(playerId) : Promise.resolve(null),
+    DB.getConfig('posiciones'),
+    DB.getConfig('categoriasEdad'),
+  ]);
+  const posiciones = posicionesCfg?.value || {};
+  const edades = edadesCfg?.value || [];
+
+  if (isEdit && !player) {
+    container.appendChild(el('div', { class: 'card' }, 'Jugador no encontrado.'));
+    return;
+  }
+
+  const p = player || {
+    nombres: '', apellidos: '', fechaNacimiento: '', sexo: 'M', lateralidad: 'Derecho',
+    gradoEscolar: '', categoriaEdad: '', posicionPrincipal: '', posicionesSecundarias: '',
+    club: '', equipo: '', fechaIngreso: '', estado: 'activo', tutor: '', telefono: '', email: '',
+    notas: '', fotoBase64: '',
+  };
+
+  const card = el('div', { class: 'card' });
+  card.appendChild(el('h2', {}, isEdit ? 'Editar jugador' : 'Nuevo jugador'));
+
+  const form = el('form', {});
+
+  // Foto
+  let fotoData = p.fotoBase64 || '';
+  const avatarPreview = p.fotoBase64
+    ? el('img', { class: 'avatar avatar-lg', src: p.fotoBase64, id: 'avatar-preview' })
+    : el('div', { class: 'avatar avatar-lg', id: 'avatar-preview' }, initials(p.nombres, p.apellidos));
+
+  const fotoInput = el('input', { type: 'file', accept: 'image/*', id: 'foto-input' });
+  fotoInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    fotoData = await fileToBase64(file);
+    const newPreview = el('img', { class: 'avatar avatar-lg', id: 'avatar-preview', src: fotoData });
+    avatarPreview.replaceWith(newPreview);
+  });
+
+  form.appendChild(
+    el('div', { class: 'flex gap-12', style: 'align-items:center; margin-bottom:18px;' }, [
+      avatarPreview,
+      el('div', {}, [
+        el('label', {}, 'Foto del jugador'),
+        fotoInput,
+        el('div', { class: 'help-text' }, 'Se guarda en tu navegador (no se sube a ningún servidor).'),
+      ]),
+    ])
+  );
+
+  function field(id, labelText, inputEl) {
+    return el('div', { class: 'field' }, [el('label', { for: id }, labelText), inputEl]);
+  }
+
+  const fsDatos = el('fieldset', {}, [el('legend', {}, 'Datos básicos')]);
+  fsDatos.appendChild(
+    el('div', { class: 'form-row' }, [
+      field('nombres', 'Nombres *', el('input', { id: 'nombres', required: true, value: p.nombres })),
+      field('apellidos', 'Apellidos *', el('input', { id: 'apellidos', required: true, value: p.apellidos })),
+    ])
+  );
+  fsDatos.appendChild(
+    el('div', { class: 'form-row' }, [
+      field('fechaNacimiento', 'Fecha de nacimiento *', el('input', { id: 'fechaNacimiento', type: 'date', required: true, value: p.fechaNacimiento })),
+      field('sexo', 'Sexo', el('select', { id: 'sexo' }, [
+        el('option', { value: 'M', selected: p.sexo === 'M' }, 'Masculino'),
+        el('option', { value: 'F', selected: p.sexo === 'F' }, 'Femenino'),
+      ])),
+      field('lateralidad', 'Lateralidad (pierna hábil)', el('select', { id: 'lateralidad' }, [
+        el('option', { value: 'Derecho', selected: p.lateralidad === 'Derecho' }, 'Derecho'),
+        el('option', { value: 'Izquierdo', selected: p.lateralidad === 'Izquierdo' }, 'Izquierdo'),
+        el('option', { value: 'Ambidiestro', selected: p.lateralidad === 'Ambidiestro' }, 'Ambidiestro'),
+      ])),
+    ])
+  );
+  fsDatos.appendChild(
+    el('div', { class: 'form-row' }, [
+      field('gradoEscolar', 'Grado escolar', el('input', { id: 'gradoEscolar', value: p.gradoEscolar })),
+      field('categoriaEdad', 'Categoría', el('select', { id: 'categoriaEdad' }, [
+        el('option', { value: '' }, 'Auto (según edad)'),
+        ...edades.map((c) => el('option', { value: c.key, selected: p.categoriaEdad === c.key }, c.label)),
+      ])),
+      field('estado', 'Estado', el('select', { id: 'estado' }, [
+        el('option', { value: 'activo', selected: p.estado === 'activo' }, 'Activo'),
+        el('option', { value: 'inactivo', selected: p.estado === 'inactivo' }, 'Inactivo'),
+      ])),
+    ])
+  );
+  form.appendChild(fsDatos);
+
+  const fsClub = el('fieldset', {}, [el('legend', {}, 'Club y posición')]);
+  fsClub.appendChild(
+    el('div', { class: 'form-row' }, [
+      field('club', 'Club / entidad deportiva', el('input', { id: 'club', value: p.club })),
+      field('equipo', 'Equipo / plantel', el('input', { id: 'equipo', value: p.equipo })),
+      field('fechaIngreso', 'Fecha de ingreso', el('input', { id: 'fechaIngreso', type: 'date', value: p.fechaIngreso })),
+    ])
+  );
+  fsClub.appendChild(
+    el('div', { class: 'form-row' }, [
+      field('posicionPrincipal', 'Posición principal', el('select', { id: 'posicionPrincipal' }, [
+        el('option', { value: '' }, 'Sin definir'),
+        ...Object.entries(posiciones).map(([k, pos]) => el('option', { value: k, selected: p.posicionPrincipal === k }, pos.label)),
+      ])),
+      field('posicionesSecundarias', 'Posiciones secundarias (texto libre)', el('input', { id: 'posicionesSecundarias', value: p.posicionesSecundarias })),
+    ])
+  );
+  form.appendChild(fsClub);
+
+  const fsContacto = el('fieldset', {}, [el('legend', {}, 'Contacto / acudiente')]);
+  fsContacto.appendChild(
+    el('div', { class: 'form-row' }, [
+      field('tutor', 'Nombre del acudiente', el('input', { id: 'tutor', value: p.tutor })),
+      field('telefono', 'Teléfono', el('input', { id: 'telefono', value: p.telefono })),
+      field('email', 'Correo electrónico', el('input', { id: 'email', type: 'email', value: p.email })),
+    ])
+  );
+  fsContacto.appendChild(field('notas', 'Notas / observaciones generales', el('textarea', { id: 'notas', rows: 3 }, p.notas)));
+  form.appendChild(fsContacto);
+
+  const actions = el('div', { class: 'flex gap-12' }, [
+    el('button', { type: 'submit', class: 'btn btn-primary' }, isEdit ? 'Guardar cambios' : 'Registrar jugador'),
+    el('button', { type: 'button', class: 'btn btn-outline', onClick: () => history.back() }, 'Cancelar'),
+  ]);
+
+  if (isEdit) {
+    actions.appendChild(
+      el('button', {
+        type: 'button',
+        class: 'btn btn-danger',
+        style: 'margin-left:auto;',
+        onClick: async () => {
+          if (confirmDialog(`¿Eliminar a ${p.nombres} ${p.apellidos}? Esto también borra sus evaluaciones, ficha médica y nutricional.`)) {
+            await DB.deletePlayer(playerId);
+            toast('Jugador eliminado', 'success');
+            navigate('/jugadores');
+          }
+        },
+      }, 'Eliminar jugador')
+    );
+  }
+  form.appendChild(actions);
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+      ...(isEdit ? { id: playerId } : {}),
+      nombres: document.getElementById('nombres').value.trim(),
+      apellidos: document.getElementById('apellidos').value.trim(),
+      fechaNacimiento: document.getElementById('fechaNacimiento').value,
+      sexo: document.getElementById('sexo').value,
+      lateralidad: document.getElementById('lateralidad').value,
+      gradoEscolar: document.getElementById('gradoEscolar').value.trim(),
+      categoriaEdad: document.getElementById('categoriaEdad').value,
+      estado: document.getElementById('estado').value,
+      club: document.getElementById('club').value.trim(),
+      equipo: document.getElementById('equipo').value.trim(),
+      fechaIngreso: document.getElementById('fechaIngreso').value,
+      posicionPrincipal: document.getElementById('posicionPrincipal').value,
+      posicionesSecundarias: document.getElementById('posicionesSecundarias').value.trim(),
+      tutor: document.getElementById('tutor').value.trim(),
+      telefono: document.getElementById('telefono').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      notas: document.getElementById('notas').value.trim(),
+      fotoBase64: fotoData,
+    };
+
+    if (!data.nombres || !data.apellidos || !data.fechaNacimiento) {
+      toast('Completa nombres, apellidos y fecha de nacimiento', 'error');
+      return;
+    }
+
+    let saved;
+    if (isEdit) saved = await DB.updatePlayer(data);
+    else saved = await DB.addPlayer(data);
+
+    toast(isEdit ? 'Jugador actualizado' : 'Jugador registrado', 'success');
+    navigate(`/jugadores/${saved.id}`);
+  });
+
+  card.appendChild(form);
+  container.appendChild(card);
+}
+
+  return { renderPlayersList, renderPlayerForm };
+})();
+
+
+/* ===== modulo: js/views/playerProfile.js ===== */
+const ViewPlayerProfile = (function () {
+  const { DB } = DBMod;
+  const { el, calcAge, formatDate, initials, navigate, scoreBarRow } = Utils;
+  const { CATEGORIAS } = Seed;
+
+/* ============================================================
+   views/playerProfile.js — Ficha 360° del jugador: resumen,
+   radar de perfil, progreso, clasificación por posición,
+   evaluaciones, ficha médica y nutricional.
+   ============================================================ */
+
+
+
+
+let radarChartInstance = null;
+let progressChartInstance = null;
+
+async function renderPlayerProfile(container, playerId) {
+  const [player, evaluations, medical, nutrition, posicionesCfg] = await Promise.all([
+    DB.getPlayer(playerId),
+    DB.getEvaluationsByPlayer(playerId),
+    DB.getMedicalByPlayer(playerId),
+    DB.getNutritionByPlayer(playerId),
+    DB.getConfig('posiciones'),
+  ]);
+
+  if (!player) {
+    container.appendChild(el('div', { class: 'card' }, 'Jugador no encontrado.'));
+    return;
+  }
+
+  const posiciones = posicionesCfg?.value || {};
+  const sortedEvals = [...evaluations].sort((a, b) => (a.fecha || '').localeCompare(b.fecha || ''));
+  const lastEval = sortedEvals[sortedEvals.length - 1];
+  const age = calcAge(player.fechaNacimiento);
+
+  const card = el('div', { class: 'card' });
+  card.appendChild(
+    el('div', { class: 'profile-header' }, [
+      player.fotoBase64
+        ? el('img', { class: 'avatar avatar-lg', src: player.fotoBase64 })
+        : el('div', { class: 'avatar avatar-lg' }, initials(player.nombres, player.apellidos)),
+      el('div', { class: 'profile-info' }, [
+        el('h2', {}, `${player.nombres} ${player.apellidos}`),
+        el('p', { class: 'muted' }, [
+          age !== null ? `${age} años` : '', ' · ',
+          player.club || 'Sin club', player.equipo ? ` (${player.equipo})` : '',
+        ]),
+        el('div', { class: 'profile-tags' }, [
+          posiciones[player.posicionPrincipal] ? el('span', { class: 'badge badge-green' }, posiciones[player.posicionPrincipal].label) : null,
+          player.lateralidad ? el('span', { class: 'badge badge-gray' }, player.lateralidad) : null,
+          player.estado === 'inactivo' ? el('span', { class: 'badge badge-red' }, 'Inactivo') : el('span', { class: 'badge badge-blue' }, 'Activo'),
+        ]),
+      ]),
+      el('div', { style: 'margin-left:auto;' }, [
+        el('button', { class: 'btn btn-outline', onClick: () => navigate(`/jugadores/${player.id}/editar`) }, 'Editar ficha'),
+      ]),
+    ])
+  );
+
+  const tabs = el('div', { class: 'tabs' });
+  const tabButtons = {
+    perfil: el('button', { class: 'tab-btn active' }, '📊 Perfil'),
+    evaluaciones: el('button', { class: 'tab-btn' }, `🏃 Evaluaciones (${evaluations.length})`),
+    medico: el('button', { class: 'tab-btn' }, `🩺 Médico (${medical.length})`),
+    nutricion: el('button', { class: 'tab-btn' }, `🥗 Nutrición (${nutrition.length})`),
+  };
+  Object.values(tabButtons).forEach((b) => tabs.appendChild(b));
+  card.appendChild(tabs);
+
+  const panels = {
+    perfil: el('div', { class: 'tab-panel' }),
+    evaluaciones: el('div', { class: 'tab-panel', style: 'display:none;' }),
+    medico: el('div', { class: 'tab-panel', style: 'display:none;' }),
+    nutricion: el('div', { class: 'tab-panel', style: 'display:none;' }),
+  };
+  Object.values(panels).forEach((p) => card.appendChild(p));
+
+  function showTab(name) {
+    for (const k of Object.keys(panels)) {
+      panels[k].style.display = k === name ? '' : 'none';
+      tabButtons[k].classList.toggle('active', k === name);
+    }
+  }
+  tabButtons.perfil.addEventListener('click', () => showTab('perfil'));
+  tabButtons.evaluaciones.addEventListener('click', () => showTab('evaluaciones'));
+  tabButtons.medico.addEventListener('click', () => showTab('medico'));
+  tabButtons.nutricion.addEventListener('click', () => showTab('nutricion'));
+
+  buildPerfilTab(panels.perfil, { player, lastEval, sortedEvals, posiciones });
+  buildEvaluacionesTab(panels.evaluaciones, { player, sortedEvals });
+  buildMedicoTab(panels.medico, { player, medical });
+  buildNutricionTab(panels.nutricion, { player, nutrition });
+
+  container.appendChild(card);
+}
+
+function buildPerfilTab(panel, { player, lastEval, sortedEvals, posiciones }) {
+  if (!lastEval) {
+    panel.appendChild(
+      el('div', { class: 'empty-state' }, [
+        el('div', { class: 'icon' }, '📋'),
+        el('p', {}, 'Este jugador aún no tiene evaluaciones físicas registradas.'),
+        el('button', { class: 'btn btn-primary', onClick: () => navigate(`/evaluaciones/nueva?player=${player.id}`) }, '+ Registrar primera evaluación'),
+      ])
+    );
+    return;
+  }
+
+  panel.appendChild(
+    el('div', { class: 'grid grid-3' }, [
+      el('div', { class: 'stat-card' }, [el('div', { class: 'stat-value' }, lastEval.scoreFisicoGlobal ?? '—'), el('div', { class: 'stat-label' }, 'Score físico-técnico global')]),
+      el('div', { class: 'stat-card' }, [el('div', { class: 'stat-value' }, lastEval.imc ?? '—'), el('div', { class: 'stat-label' }, `IMC (${lastEval.imcClasificacion || '—'})`)]),
+      el('div', { class: 'stat-card' }, [el('div', { class: 'stat-value' }, formatDate(lastEval.fecha)), el('div', { class: 'stat-label' }, 'Última evaluación')]),
+    ])
+  );
+
+  panel.appendChild(el('div', { class: 'grid grid-2' }, [buildRadarBlock(lastEval), buildProgressBlock(sortedEvals)]));
+
+  panel.appendChild(el('h3', { style: 'margin-top:10px;' }, 'Idoneidad por posición de juego'));
+  const posWrap = el('div');
+  (lastEval.positionFit || []).forEach((pf) => posWrap.appendChild(scoreBarRow(pf.label, pf.fit)));
+  panel.appendChild(posWrap);
+
+  if (lastEval.observaciones) {
+    panel.appendChild(el('h3', { style: 'margin-top:18px;' }, 'Observaciones automáticas'));
+    panel.appendChild(el('div', { class: 'obs-box' }, lastEval.observaciones));
+  }
+
+  panel.appendChild(
+    el('div', { class: 'mt-16' }, [
+      el('button', { class: 'btn btn-outline', onClick: () => navigate(`/evaluaciones/nueva?player=${player.id}`) }, '+ Nueva evaluación'),
+    ])
+  );
+}
+
+function buildRadarBlock(lastEval) {
+  const wrap = el('div', { class: 'card', style: 'box-shadow:none; border-style:dashed;' }, [
+    el('h3', {}, 'Perfil por categoría'),
+    el('div', { class: 'chart-wrap' }, el('canvas', { id: 'radar-canvas', height: '260' })),
+  ]);
+  setTimeout(() => {
+    const canvas = wrap.querySelector('#radar-canvas');
+    if (!canvas || typeof Chart === 'undefined') return;
+    if (radarChartInstance) radarChartInstance.destroy();
+    const labels = Object.entries(CATEGORIAS).map(([, label]) => label);
+    const data = Object.keys(CATEGORIAS).map((k) => lastEval.categoryScores?.[k] ?? 0);
+    radarChartInstance = new Chart(canvas.getContext('2d'), {
+      type: 'radar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Score (0-10)',
+          data,
+          backgroundColor: 'rgba(22,163,74,0.2)',
+          borderColor: '#16a34a',
+          pointBackgroundColor: '#16a34a',
+        }],
+      },
+      options: {
+        scales: { r: { min: 0, max: 10, ticks: { stepSize: 2 } } },
+        plugins: { legend: { display: false } },
+      },
+    });
+  }, 0);
+  return wrap;
+}
+
+function buildProgressBlock(sortedEvals) {
+  const wrap = el('div', { class: 'card', style: 'box-shadow:none; border-style:dashed;' }, [
+    el('h3', {}, 'Progreso en el tiempo'),
+    sortedEvals.length > 1
+      ? el('div', { class: 'chart-wrap' }, el('canvas', { id: 'progress-canvas', height: '260' }))
+      : el('p', { class: 'muted' }, 'Se necesitan al menos 2 evaluaciones para ver el progreso.'),
+  ]);
+  if (sortedEvals.length > 1) {
+    setTimeout(() => {
+      const canvas = wrap.querySelector('#progress-canvas');
+      if (!canvas || typeof Chart === 'undefined') return;
+      if (progressChartInstance) progressChartInstance.destroy();
+      progressChartInstance = new Chart(canvas.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: sortedEvals.map((e) => formatDate(e.fecha)),
+          datasets: [{
+            label: 'Score físico-técnico global',
+            data: sortedEvals.map((e) => e.scoreFisicoGlobal),
+            borderColor: '#16a34a',
+            backgroundColor: 'rgba(22,163,74,0.15)',
+            tension: 0.3,
+            fill: true,
+          }],
+        },
+        options: { scales: { y: { min: 0, max: 10 } }, plugins: { legend: { display: false } } },
+      });
+    }, 0);
+  }
+  return wrap;
+}
+
+function buildEvaluacionesTab(panel, { player, sortedEvals }) {
+  panel.appendChild(
+    el('div', { class: 'flex-between mb-0' }, [
+      el('h3', { class: 'mb-0' }, 'Historial de evaluaciones'),
+      el('button', { class: 'btn btn-primary btn-sm', onClick: () => navigate(`/evaluaciones/nueva?player=${player.id}`) }, '+ Nueva'),
+    ])
+  );
+  if (!sortedEvals.length) {
+    panel.appendChild(el('p', { class: 'muted mt-8' }, 'Sin evaluaciones registradas.'));
+    return;
+  }
+  const wrap = el('div', { class: 'table-wrap mt-16' });
+  const table = el('table', {}, [
+    el('thead', {}, el('tr', {}, ['Fecha', 'Edad', 'IMC', 'Score global', ''].map((h) => el('th', {}, h)))),
+  ]);
+  const tbody = el('tbody');
+  [...sortedEvals].reverse().forEach((ev) => {
+    tbody.appendChild(
+      el('tr', { style: 'cursor:pointer;', onClick: () => navigate(`/evaluaciones/${ev.id}`) }, [
+        el('td', {}, formatDate(ev.fecha)),
+        el('td', {}, ev.edadAlMomento ?? '—'),
+        el('td', {}, ev.imc ?? '—'),
+        el('td', {}, ev.scoreFisicoGlobal ?? '—'),
+        el('td', { class: 'text-right' }, el('span', { class: 'btn-link' }, 'Ver →')),
+      ])
+    );
+  });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  panel.appendChild(wrap);
+}
+
+function buildMedicoTab(panel, { player, medical }) {
+  panel.appendChild(
+    el('div', { class: 'flex-between mb-0' }, [
+      el('h3', { class: 'mb-0' }, 'Ficha médica'),
+      el('button', { class: 'btn btn-primary btn-sm', onClick: () => navigate(`/medico/nueva?player=${player.id}`) }, '+ Nuevo registro'),
+    ])
+  );
+  if (!medical.length) {
+    panel.appendChild(el('p', { class: 'muted mt-8' }, 'Sin registros médicos.'));
+    return;
+  }
+  const wrap = el('div', { class: 'table-wrap mt-16' });
+  const table = el('table', {}, [
+    el('thead', {}, el('tr', {}, ['Fecha', 'Tipo', 'Aptitud', 'Detalle', ''].map((h) => el('th', {}, h)))),
+  ]);
+  const tbody = el('tbody');
+  [...medical].sort((a, b) => (b.fecha || '').localeCompare(a.fecha || '')).forEach((m) => {
+    tbody.appendChild(
+      el('tr', { style: 'cursor:pointer;', onClick: () => navigate(`/medico/${m.id}/editar`) }, [
+        el('td', {}, formatDate(m.fecha)),
+        el('td', {}, m.tipo || '—'),
+        el('td', {}, aptitudBadge(m.aptitud)),
+        el('td', {}, m.tipo === 'lesion' ? (m.lesionTipo || '') : (m.observaciones || '').slice(0, 60)),
+        el('td', { class: 'text-right' }, el('span', { class: 'btn-link' }, 'Ver →')),
+      ])
+    );
+  });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  panel.appendChild(wrap);
+}
+
+function aptitudBadge(aptitud) {
+  const map = {
+    apto: ['badge-green', 'Apto'],
+    apto_restricciones: ['badge-amber', 'Apto con restricciones'],
+    no_apto: ['badge-red', 'No apto'],
+  };
+  const [cls, txt] = map[aptitud] || ['badge-gray', aptitud || '—'];
+  return el('span', { class: `badge ${cls}` }, txt);
+}
+
+function buildNutricionTab(panel, { player, nutrition }) {
+  panel.appendChild(
+    el('div', { class: 'flex-between mb-0' }, [
+      el('h3', { class: 'mb-0' }, 'Ficha nutricional'),
+      el('button', { class: 'btn btn-primary btn-sm', onClick: () => navigate(`/nutricion/nueva?player=${player.id}`) }, '+ Nuevo registro'),
+    ])
+  );
+  if (!nutrition.length) {
+    panel.appendChild(el('p', { class: 'muted mt-8' }, 'Sin registros nutricionales.'));
+    return;
+  }
+  const wrap = el('div', { class: 'table-wrap mt-16' });
+  const table = el('table', {}, [
+    el('thead', {}, el('tr', {}, ['Fecha', 'Peso', 'Talla', 'IMC', 'Plan', ''].map((h) => el('th', {}, h)))),
+  ]);
+  const tbody = el('tbody');
+  [...nutrition].sort((a, b) => (b.fecha || '').localeCompare(a.fecha || '')).forEach((n) => {
+    tbody.appendChild(
+      el('tr', { style: 'cursor:pointer;', onClick: () => navigate(`/nutricion/${n.id}/editar`) }, [
+        el('td', {}, formatDate(n.fecha)),
+        el('td', {}, n.peso ? `${n.peso} kg` : '—'),
+        el('td', {}, n.talla ? `${n.talla} cm` : '—'),
+        el('td', {}, n.imc ?? '—'),
+        el('td', {}, (n.planAlimenticio || '').slice(0, 50)),
+        el('td', { class: 'text-right' }, el('span', { class: 'btn-link' }, 'Ver →')),
+      ])
+    );
+  });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  panel.appendChild(wrap);
+}
+
+  return { renderPlayerProfile };
+})();
+
+
+/* ===== modulo: js/views/evaluation.js ===== */
+const ViewEvaluation = (function () {
+  const { DB } = DBMod;
+  const { el, calcAge, calcIMC, clasificarIMC, formatDate, todayISO, toast, navigate, scoreBarRow, confirmDialog } = Utils;
+  const { CATEGORIAS } = Seed;
+  const { computeTestScores, computeCategoryScores, computeGlobalScore, computePositionFit, generateObservations } = Scoring;
+
+/* ============================================================
+   views/evaluation.js — Captura, listado, detalle e importación
+   masiva (Excel) de evaluaciones físicas/técnicas.
+   ============================================================ */
+
+
+
+
+
+async function loadCfg() {
+  const [baremosCfg, testsCfg, posicionesCfg] = await Promise.all([
+    DB.getConfig('baremos'),
+    DB.getConfig('testDefinitions'),
+    DB.getConfig('posiciones'),
+  ]);
+  return {
+    baremos: baremosCfg?.value || {},
+    testDefs: testsCfg?.value || [],
+    posiciones: posicionesCfg?.value || {},
+  };
+}
+
+async function renderEvaluationsList(container) {
+  const [evaluations, players] = await Promise.all([DB.getAllEvaluations(), DB.getAllPlayers()]);
+  const playersById = Object.fromEntries(players.map((p) => [p.id, p]));
+
+  const card = el('div', { class: 'card' });
+  card.appendChild(
+    el('div', { class: 'card-header' }, [
+      el('h2', {}, `Evaluaciones físicas (${evaluations.length})`),
+      el('div', { class: 'flex gap-8' }, [
+        el('button', { class: 'btn btn-outline', onClick: () => document.getElementById('excel-import-input').click() }, '📥 Importar desde Excel'),
+        el('button', { class: 'btn btn-primary', onClick: () => navigate('/evaluaciones/nueva') }, '+ Nueva evaluación'),
+      ]),
+    ])
+  );
+
+  const importInput = el('input', { type: 'file', id: 'excel-import-input', accept: '.xlsx,.xls,.csv', style: 'display:none;' });
+  importInput.addEventListener('change', (e) => handleExcelImport(e.target.files[0]));
+  card.appendChild(importInput);
+
+  card.appendChild(
+    el('p', { class: 'help-text' }, 'La importación reconoce automáticamente las columnas de la matriz del club (nombres, apellidos, talla, peso y las pruebas físicas) y crea jugadores nuevos si no existen.')
+  );
+
+  if (!evaluations.length) {
+    card.appendChild(
+      el('div', { class: 'empty-state' }, [
+        el('div', { class: 'icon' }, '🏃'),
+        el('p', {}, 'Todavía no hay evaluaciones registradas.'),
+      ])
+    );
+    container.appendChild(card);
+    return;
+  }
+
+  const wrap = el('div', { class: 'table-wrap' });
+  const table = el('table', {}, [
+    el('thead', {}, el('tr', {}, ['Jugador', 'Fecha', 'Edad', 'IMC', 'Score físico global', ''].map((h) => el('th', {}, h)))),
+  ]);
+  const tbody = el('tbody');
+  evaluations
+    .sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''))
+    .forEach((ev) => {
+      const player = playersById[ev.playerId];
+      tbody.appendChild(
+        el('tr', { style: 'cursor:pointer;', onClick: () => navigate(`/evaluaciones/${ev.id}`) }, [
+          el('td', {}, player ? `${player.nombres} ${player.apellidos}` : '(jugador eliminado)'),
+          el('td', {}, formatDate(ev.fecha)),
+          el('td', {}, ev.edadAlMomento != null ? `${ev.edadAlMomento} años` : '—'),
+          el('td', {}, ev.imc != null ? `${ev.imc} (${ev.imcClasificacion})` : '—'),
+          el('td', {}, ev.scoreFisicoGlobal != null ? el('span', { class: 'badge badge-green' }, `${ev.scoreFisicoGlobal}/10`) : '—'),
+          el('td', { class: 'text-right' }, el('span', { class: 'btn-link' }, 'Ver →')),
+        ])
+      );
+    });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  card.appendChild(wrap);
+  container.appendChild(card);
+}
+
+async function renderEvaluationForm(container, evaluationId, presetPlayerId) {
+  const isEdit = !!evaluationId;
+  const [players, cfg, existing] = await Promise.all([
+    DB.getAllPlayers(),
+    loadCfg(),
+    isEdit ? DB.getEvaluation(evaluationId) : Promise.resolve(null),
+  ]);
+  const { baremos, testDefs } = cfg;
+
+  if (isEdit && !existing) {
+    container.appendChild(el('div', { class: 'card' }, 'Evaluación no encontrada.'));
+    return;
+  }
+  if (!players.length) {
+    container.appendChild(
+      el('div', { class: 'card empty-state' }, [
+        el('p', {}, 'Registra al menos un jugador antes de crear una evaluación.'),
+        el('button', { class: 'btn btn-primary', onClick: () => navigate('/jugadores/nuevo') }, '+ Nuevo jugador'),
+      ])
+    );
+    return;
+  }
+
+  const e0 = existing || {
+    playerId: presetPlayerId || players[0].id,
+    fecha: todayISO(),
+    talla: '', peso: '', tests: {}, notasEvaluador: '', evaluador: '',
+  };
+
+  const card = el('div', { class: 'card' });
+  card.appendChild(el('h2', {}, isEdit ? 'Editar evaluación' : 'Nueva evaluación física'));
+
+  const form = el('form', {});
+
+  const playerSelect = el(
+    'select', { id: 'playerId', required: true },
+    players
+      .sort((a, b) => `${a.apellidos}`.localeCompare(b.apellidos))
+      .map((p) => el('option', { value: p.id, selected: p.id === e0.playerId }, `${p.nombres} ${p.apellidos}`))
+  );
+
+  form.appendChild(
+    el('div', { class: 'form-row' }, [
+      el('div', { class: 'field' }, [el('label', {}, 'Jugador *'), playerSelect]),
+      el('div', { class: 'field' }, [el('label', {}, 'Fecha de la valoración *'), el('input', { id: 'fecha', type: 'date', required: true, value: e0.fecha })]),
+      el('div', { class: 'field' }, [el('label', {}, 'Evaluador / preparador físico'), el('input', { id: 'evaluador', value: e0.evaluador || '' })]),
+    ])
+  );
+
+  const fsAntro = el('fieldset', {}, [el('legend', {}, 'Antropometría')]);
+  const tallaInput = el('input', { id: 'talla', type: 'number', step: '0.1', min: '0', value: e0.talla ?? '', placeholder: 'cm' });
+  const pesoInput = el('input', { id: 'peso', type: 'number', step: '0.1', min: '0', value: e0.peso ?? '', placeholder: 'kg' });
+  const imcOut = el('div', { class: 'field' }, [el('label', {}, 'IMC (automático)'), el('div', { id: 'imc-out', class: 'badge badge-gray' }, '—')]);
+  function updateIMC() {
+    const imc = calcIMC(Number(tallaInput.value), Number(pesoInput.value));
+    imcOut.querySelector('#imc-out').textContent = imc != null ? `${imc} · ${clasificarIMC(imc)}` : '—';
+  }
+  tallaInput.addEventListener('input', updateIMC);
+  pesoInput.addEventListener('input', updateIMC);
+  fsAntro.appendChild(
+    el('div', { class: 'form-row' }, [
+      el('div', { class: 'field' }, [el('label', {}, 'Talla (cm)'), tallaInput]),
+      el('div', { class: 'field' }, [el('label', {}, 'Peso (kg)'), pesoInput]),
+      imcOut,
+    ])
+  );
+  form.appendChild(fsAntro);
+
+  const testInputs = {};
+  const byCategory = {};
+  testDefs.forEach((d) => (byCategory[d.categoria] ||= []).push(d));
+
+  for (const [catKey, defs] of Object.entries(byCategory)) {
+    const fs = el('fieldset', {}, [el('legend', {}, CATEGORIAS[catKey] || catKey)]);
+    const row = el('div', { class: 'form-row' });
+    defs.forEach((d) => {
+      const savedEntry = e0.tests?.[d.key] || {};
+      const valorInput = el('input', {
+        type: 'number', step: 'any', value: savedEntry.valor ?? '',
+        placeholder: d.unit,
+      });
+      const group = [
+        el('div', { class: 'field' }, [
+          el('label', {}, `${d.label} (${d.unit})`),
+          valorInput,
+        ]),
+      ];
+      let scoreInput = null;
+      if (d.type === 'qual') {
+        scoreInput = el('input', {
+          type: 'number', min: '0', max: '10', step: '0.5', value: savedEntry.score ?? '',
+          placeholder: 'Puntaje 0-10',
+        });
+        group.push(
+          el('div', { class: 'field' }, [el('label', {}, 'Calificación (0-10)'), scoreInput])
+        );
+      } else {
+        group.push(el('div', { class: 'field' }, [el('label', {}, 'Puntaje (auto)'), el('div', { class: 'help-text', style: 'margin-top:9px;' }, 'Se calcula al guardar según baremo por edad.')]));
+      }
+      testInputs[d.key] = { valorInput, scoreInput, def: d };
+      row.append(...group);
+    });
+    fs.appendChild(row);
+    form.appendChild(fs);
+  }
+
+  form.appendChild(
+    el('div', { class: 'field' }, [
+      el('label', {}, 'Notas del evaluador'),
+      el('textarea', { id: 'notasEvaluador', rows: 3 }, e0.notasEvaluador || ''),
+    ])
+  );
+
+  const actions = el('div', { class: 'flex gap-12' }, [
+    el('button', { type: 'submit', class: 'btn btn-primary' }, isEdit ? 'Guardar cambios' : 'Guardar evaluación'),
+    el('button', { type: 'button', class: 'btn btn-outline', onClick: () => history.back() }, 'Cancelar'),
+  ]);
+  if (isEdit) {
+    actions.appendChild(
+      el('button', {
+        type: 'button', class: 'btn btn-danger', style: 'margin-left:auto;',
+        onClick: async () => {
+          if (confirmDialog('¿Eliminar esta evaluación?')) {
+            await DB.deleteEvaluation(evaluationId);
+            toast('Evaluación eliminada', 'success');
+            navigate(`/jugadores/${e0.playerId}`);
+          }
+        },
+      }, 'Eliminar')
+    );
+  }
+  form.appendChild(actions);
+
+  form.addEventListener('submit', async (evt) => {
+    evt.preventDefault();
+    const playerId = playerSelect.value;
+    const fecha = document.getElementById('fecha').value;
+    const player = players.find((p) => p.id === playerId);
+    const age = calcAge(player.fechaNacimiento, fecha);
+    const talla = tallaInput.value ? Number(tallaInput.value) : null;
+    const peso = pesoInput.value ? Number(pesoInput.value) : null;
+    const imc = calcIMC(peso, talla);
+
+    const tests = {};
+    for (const [key, { valorInput, scoreInput }] of Object.entries(testInputs)) {
+      tests[key] = {
+        valor: valorInput.value === '' ? null : Number(valorInput.value),
+        score: scoreInput ? (scoreInput.value === '' ? null : Number(scoreInput.value)) : undefined,
+      };
+    }
+
+    const testScores = computeTestScores(tests, testDefs, baremos, age ?? 14);
+    const categoryScores = computeCategoryScores(testScores, testDefs);
+    const scoreFisicoGlobal = computeGlobalScore(categoryScores);
+    const posicionesCfg = (await DB.getConfig('posiciones'))?.value || {};
+    const positionFit = computePositionFit(categoryScores, posicionesCfg);
+    const observaciones = generateObservations({
+      categoryScores, testScores, testDefs, positionFit, imc, imcClasificacion: clasificarIMC(imc), nombre: player.nombres,
+    });
+
+    const record = {
+      ...(isEdit ? { id: evaluationId } : {}),
+      playerId, fecha, edadAlMomento: age,
+      talla, peso, imc, imcClasificacion: clasificarIMC(imc),
+      tests, testScores, categoryScores, scoreFisicoGlobal, positionFit,
+      observaciones, notasEvaluador: document.getElementById('notasEvaluador').value.trim(), evaluador: document.getElementById('evaluador').value.trim(),
+    };
+
+    if (isEdit) await DB.updateEvaluation(record);
+    else await DB.addEvaluation(record);
+
+    toast('Evaluación guardada', 'success');
+    navigate(`/jugadores/${playerId}`);
+  });
+
+  updateIMC();
+  card.appendChild(form);
+  container.appendChild(card);
+}
+
+async function renderEvaluationDetail(container, evaluationId) {
+  const ev = await DB.getEvaluation(evaluationId);
+  if (!ev) {
+    container.appendChild(el('div', { class: 'card' }, 'Evaluación no encontrada.'));
+    return;
+  }
+  const player = await DB.getPlayer(ev.playerId);
+  const testDefs = (await DB.getConfig('testDefinitions'))?.value || [];
+
+  const card = el('div', { class: 'card' });
+  card.appendChild(
+    el('div', { class: 'card-header' }, [
+      el('div', {}, [
+        el('h2', {}, `Evaluación de ${player ? `${player.nombres} ${player.apellidos}` : '—'}`),
+        el('p', { class: 'muted' }, `${formatDate(ev.fecha)} · ${ev.edadAlMomento ?? '—'} años · Evaluador: ${ev.evaluador || '—'}`),
+      ]),
+      el('div', { class: 'flex gap-8' }, [
+        el('button', { class: 'btn btn-outline', onClick: () => navigate(`/evaluaciones/${ev.id}/editar`) }, 'Editar'),
+        player ? el('button', { class: 'btn btn-outline', onClick: () => navigate(`/jugadores/${player.id}`) }, 'Ver jugador') : null,
+      ]),
+    ])
+  );
+
+  card.appendChild(
+    el('div', { class: 'grid grid-3' }, [
+      el('div', { class: 'stat-card' }, [el('div', { class: 'stat-value' }, ev.imc ?? '—'), el('div', { class: 'stat-label' }, `IMC (${ev.imcClasificacion || '—'})`)]),
+      el('div', { class: 'stat-card' }, [el('div', { class: 'stat-value' }, ev.scoreFisicoGlobal ?? '—'), el('div', { class: 'stat-label' }, 'Score físico-técnico global (0-10)')]),
+      el('div', { class: 'stat-card' }, [el('div', { class: 'stat-value' }, ev.positionFit?.[0]?.label || '—'), el('div', { class: 'stat-label' }, 'Posición de mayor afinidad') ]),
+    ])
+  );
+
+  card.appendChild(el('hr', { class: 'divider' }));
+  card.appendChild(el('h3', {}, 'Resultados por prueba'));
+  const testsWrap = el('div');
+  testDefs.forEach((d) => {
+    const t = ev.testScores?.[d.key];
+    if (!t) return;
+    testsWrap.appendChild(scoreBarRow(`${d.label} (${t.valor ?? '—'} ${d.unit})`, t.score));
+  });
+  card.appendChild(testsWrap);
+
+  if (ev.observaciones) {
+    card.appendChild(el('h3', { style: 'margin-top:18px;' }, 'Observaciones automáticas'));
+    card.appendChild(el('div', { class: 'obs-box' }, ev.observaciones));
+  }
+  if (ev.notasEvaluador) {
+    card.appendChild(el('h3', { style: 'margin-top:18px;' }, 'Notas del evaluador'));
+    card.appendChild(el('p', {}, ev.notasEvaluador));
+  }
+
+  container.appendChild(card);
+}
+
+/* ---------------- Importación desde Excel ---------------- */
+
+function normalizeHeader(h) {
+  return String(h || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+const HEADER_MATCHERS = [
+  { key: 'nombres', test: (h) => h === 'nombres' },
+  { key: 'apellidos', test: (h) => h === 'apellidos' },
+  { key: 'fechaNacimiento', test: (h) => h.includes('nacim') },
+  { key: 'lateralidad', test: (h) => h === 'd i' || h.includes('d i') },
+  { key: 'gradoEscolar', test: (h) => h.includes('grado') },
+  { key: 'talla', test: (h) => h.includes('talla') },
+  { key: 'peso', test: (h) => h.includes('peso') },
+  { key: 'fuerzaAbd', test: (h) => h.includes('abd') },
+  { key: 'flexoExtension', test: (h) => h.includes('fle') || h.includes('codo') },
+  { key: 'saltoVertical', test: (h) => h.includes('vertical') },
+  { key: 'saltoHorizontal', test: (h) => h.includes('horizontal') },
+  { key: 'coordinacion', test: (h) => h.includes('coordina') },
+  { key: 'cooper', test: (h) => h.includes('cooper') },
+  { key: 'test30m', test: (h) => h.includes('30') },
+  { key: 'conduccion', test: (h) => h.includes('conducc') },
+  { key: 'potenciaTiro', test: (h) => h.includes('potencia') },
+  { key: 'carreraConPase', test: (h) => h.includes('pase') },
+  { key: 'precision', test: (h) => h.includes('precision') },
+  { key: 'controlBalon', test: (h) => h.includes('control') },
+];
+
+function matchColumn(header) {
+  const h = normalizeHeader(header);
+  for (const m of HEADER_MATCHERS) if (m.test(h)) return m.key;
+  return null;
+}
+
+async function handleExcelImport(file) {
+  if (!file) return;
+  if (typeof XLSX === 'undefined') {
+    toast('No se pudo cargar la librería de Excel (sin conexión a internet).', 'error');
+    return;
+  }
+  try {
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+    const sheet = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+
+    // encontrar la fila de encabezados (contiene "Nombres")
+    let headerRowIdx = rows.findIndex((r) => r.some((c) => normalizeHeader(c) === 'nombres'));
+    if (headerRowIdx === -1) {
+      toast('No se encontró una columna "Nombres" en el archivo.', 'error');
+      return;
+    }
+    const headerRow = rows[headerRowIdx];
+    const colMap = {}; // colIndex -> key
+    headerRow.forEach((h, i) => {
+      const key = matchColumn(h);
+      if (key) colMap[i] = key;
+    });
+
+    const [players, cfg] = await Promise.all([DB.getAllPlayers(), loadCfg()]);
+    const { baremos, testDefs, posiciones } = cfg;
+    const findPlayer = (nombres, apellidos) =>
+      players.find(
+        (p) => normalizeHeader(p.nombres) === normalizeHeader(nombres) && normalizeHeader(p.apellidos) === normalizeHeader(apellidos)
+      );
+
+    let created = 0;
+    let evaluated = 0;
+    const fecha = todayISO();
+
+    for (let r = headerRowIdx + 1; r < rows.length; r++) {
+      const row = rows[r];
+      const rec = {};
+      Object.entries(colMap).forEach(([i, key]) => (rec[key] = row[Number(i)]));
+      if (!rec.nombres && !rec.apellidos) continue;
+
+      let player = findPlayer(rec.nombres, rec.apellidos);
+      if (!player) {
+        player = await DB.addPlayer({
+          nombres: String(rec.nombres || '').trim(),
+          apellidos: String(rec.apellidos || '').trim(),
+          fechaNacimiento: excelDateToISO(rec.fechaNacimiento) || '',
+          lateralidad: rec.lateralidad || '',
+          gradoEscolar: rec.gradoEscolar || '',
+          sexo: 'M', estado: 'activo',
+          club: '', equipo: '', posicionPrincipal: '', categoriaEdad: '',
+        });
+        players.push(player);
+        created++;
+      }
+
+      const age = player.fechaNacimiento ? calcAge(player.fechaNacimiento, fecha) : 13;
+      const talla = num(rec.talla);
+      const peso = num(rec.peso);
+      const imc = calcIMC(peso, talla);
+
+      const tests = {};
+      testDefs.forEach((d) => {
+        const raw = rec[d.key];
+        if (raw === undefined || raw === '') { tests[d.key] = { valor: null, score: undefined }; return; }
+        tests[d.key] = d.type === 'quant' ? { valor: num(raw) } : { valor: num(raw), score: undefined };
+      });
+
+      const testScores = computeTestScores(tests, testDefs, baremos, age ?? 13);
+      const categoryScores = computeCategoryScores(testScores, testDefs);
+      const scoreFisicoGlobal = computeGlobalScore(categoryScores);
+      const positionFit = computePositionFit(categoryScores, posiciones);
+      const observaciones = generateObservations({
+        categoryScores, testScores, testDefs, positionFit, imc, imcClasificacion: clasificarIMC(imc), nombre: player.nombres,
+      });
+
+      await DB.addEvaluation({
+        playerId: player.id, fecha, edadAlMomento: age, talla, peso, imc, imcClasificacion: clasificarIMC(imc),
+        tests, testScores, categoryScores, scoreFisicoGlobal, positionFit, observaciones,
+        notasEvaluador: 'Importado desde matriz Excel del club.', evaluador: '',
+      });
+      evaluated++;
+    }
+
+    toast(`Importación completa: ${evaluated} evaluaciones, ${created} jugadores nuevos.`, 'success');
+    navigate('/evaluaciones');
+    setTimeout(() => window.location.reload(), 400);
+  } catch (err) {
+    console.error(err);
+    toast('Error al importar el archivo: ' + err.message, 'error');
+  }
+}
+
+function num(v) {
+  if (v === '' || v === undefined || v === null) return null;
+  const n = Number(String(v).replace(',', '.'));
+  return Number.isNaN(n) ? null : n;
+}
+
+function excelDateToISO(v) {
+  if (!v) return '';
+  if (v instanceof Date) return v.toISOString().slice(0, 10);
+  if (typeof v === 'number') {
+    const d = new Date(Math.round((v - 25569) * 86400 * 1000));
+    return d.toISOString().slice(0, 10);
+  }
+  const s = String(v).trim();
+  const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+  if (m) {
+    let [, d, mo, y] = m;
+    if (y.length === 2) y = '20' + y;
+    return `${y}-${mo.padStart(2, '0')}-${d.padStart(2, '0')}`;
+  }
+  return '';
+}
+
+  return { renderEvaluationsList, renderEvaluationForm, renderEvaluationDetail };
+})();
+
+
+/* ===== modulo: js/views/medical.js ===== */
+const ViewMedical = (function () {
+  const { DB } = DBMod;
+  const { el, formatDate, todayISO, toast, navigate, confirmDialog } = Utils;
+
+/* ============================================================
+   views/medical.js — Ficha médica: revisiones, lesiones,
+   aptitud deportiva.
+   ============================================================ */
+
+
+
+const APTITUD_OPTS = [
+  ['apto', 'Apto'],
+  ['apto_restricciones', 'Apto con restricciones'],
+  ['no_apto', 'No apto'],
+];
+const TIPO_OPTS = [
+  ['revision', 'Revisión / chequeo general'],
+  ['lesion', 'Lesión'],
+  ['vacuna', 'Vacunación'],
+  ['otro', 'Otro'],
+];
+
+async function renderMedicalList(container) {
+  const [records, players] = await Promise.all([DB.getAllMedical(), DB.getAllPlayers()]);
+  const byId = Object.fromEntries(players.map((p) => [p.id, p]));
+
+  const card = el('div', { class: 'card' });
+  card.appendChild(
+    el('div', { class: 'card-header' }, [
+      el('h2', {}, `Ficha médica (${records.length} registros)`),
+      el('button', { class: 'btn btn-primary', onClick: () => navigate('/medico/nueva') }, '+ Nuevo registro'),
+    ])
+  );
+
+  if (!records.length) {
+    card.appendChild(
+      el('div', { class: 'empty-state' }, [
+        el('div', { class: 'icon' }, '🩺'),
+        el('p', {}, 'Aún no hay registros médicos.'),
+      ])
+    );
+    container.appendChild(card);
+    return;
+  }
+
+  const wrap = el('div', { class: 'table-wrap' });
+  const table = el('table', {}, [
+    el('thead', {}, el('tr', {}, ['Jugador', 'Fecha', 'Tipo', 'Aptitud', 'Próxima revisión', ''].map((h) => el('th', {}, h)))),
+  ]);
+  const tbody = el('tbody');
+  records
+    .sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''))
+    .forEach((m) => {
+      const p = byId[m.playerId];
+      tbody.appendChild(
+        el('tr', { style: 'cursor:pointer;', onClick: () => navigate(`/medico/${m.id}/editar`) }, [
+          el('td', {}, p ? `${p.nombres} ${p.apellidos}` : '—'),
+          el('td', {}, formatDate(m.fecha)),
+          el('td', {}, TIPO_OPTS.find((t) => t[0] === m.tipo)?.[1] || m.tipo),
+          el('td', {}, aptitudBadge(m.aptitud)),
+          el('td', {}, m.proximaRevision ? formatDate(m.proximaRevision) : '—'),
+          el('td', { class: 'text-right' }, el('span', { class: 'btn-link' }, 'Ver →')),
+        ])
+      );
+    });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  card.appendChild(wrap);
+  container.appendChild(card);
+}
+
+function aptitudBadge(aptitud) {
+  const map = { apto: 'badge-green', apto_restricciones: 'badge-amber', no_apto: 'badge-red' };
+  const label = APTITUD_OPTS.find((a) => a[0] === aptitud)?.[1] || '—';
+  return el('span', { class: `badge ${map[aptitud] || 'badge-gray'}` }, label);
+}
+
+async function renderMedicalForm(container, medicalId, presetPlayerId) {
+  const isEdit = !!medicalId;
+  const players = await DB.getAllPlayers();
+  const m0raw = isEdit ? await getMedicalById(medicalId) : null;
+
+  if (!players.length) {
+    container.appendChild(
+      el('div', { class: 'card empty-state' }, [
+        el('p', {}, 'Registra al menos un jugador antes de crear una ficha médica.'),
+        el('button', { class: 'btn btn-primary', onClick: () => navigate('/jugadores/nuevo') }, '+ Nuevo jugador'),
+      ])
+    );
+    return;
+  }
+  if (isEdit && !m0raw) {
+    container.appendChild(el('div', { class: 'card' }, 'Registro no encontrado.'));
+    return;
+  }
+
+  const m0 = m0raw || {
+    playerId: presetPlayerId || players[0].id, fecha: todayISO(), tipo: 'revision', aptitud: 'apto',
+    antecedentes: '', alergias: '', medicamentos: '', lesionTipo: '', lesionZona: '',
+    tiempoRecuperacionDias: '', estadoLesion: '', observaciones: '', proximaRevision: '',
+  };
+
+  const card = el('div', { class: 'card' });
+  card.appendChild(el('h2', {}, isEdit ? 'Editar registro médico' : 'Nuevo registro médico'));
+
+  const form = el('form', {});
+  const playerSelect = el('select', { id: 'playerId', required: true },
+    players.sort((a, b) => a.apellidos.localeCompare(b.apellidos)).map((p) =>
+      el('option', { value: p.id, selected: p.id === m0.playerId }, `${p.nombres} ${p.apellidos}`)
+    ));
+  const tipoSelect = el('select', { id: 'tipo' }, TIPO_OPTS.map(([v, l]) => el('option', { value: v, selected: m0.tipo === v }, l)));
+
+  form.appendChild(
+    el('div', { class: 'form-row' }, [
+      el('div', { class: 'field' }, [el('label', {}, 'Jugador *'), playerSelect]),
+      el('div', { class: 'field' }, [el('label', {}, 'Fecha *'), el('input', { id: 'fecha', type: 'date', required: true, value: m0.fecha })]),
+      el('div', { class: 'field' }, [el('label', {}, 'Tipo de registro'), tipoSelect]),
+    ])
+  );
+
+  form.appendChild(
+    el('div', { class: 'form-row' }, [
+      el('div', { class: 'field' }, [el('label', {}, 'Aptitud deportiva'), el('select', { id: 'aptitud' }, APTITUD_OPTS.map(([v, l]) => el('option', { value: v, selected: m0.aptitud === v }, l)))]),
+      el('div', { class: 'field' }, [el('label', {}, 'Próxima revisión'), el('input', { id: 'proximaRevision', type: 'date', value: m0.proximaRevision || '' })]),
+    ])
+  );
+
+  const fsLesion = el('fieldset', {}, [
+    el('legend', {}, 'Detalle de lesión (si aplica)'),
+    el('div', { class: 'form-row' }, [
+      el('div', { class: 'field' }, [el('label', {}, 'Tipo de lesión'), el('input', { id: 'lesionTipo', value: m0.lesionTipo || '' })]),
+      el('div', { class: 'field' }, [el('label', {}, 'Zona afectada'), el('input', { id: 'lesionZona', value: m0.lesionZona || '' })]),
+      el('div', { class: 'field' }, [el('label', {}, 'Días de recuperación estimados'), el('input', { id: 'tiempoRecuperacionDias', type: 'number', min: '0', value: m0.tiempoRecuperacionDias || '' })]),
+      el('div', { class: 'field' }, [el('label', {}, 'Estado'), el('select', { id: 'estadoLesion' }, [
+        el('option', { value: '', selected: !m0.estadoLesion }, '—'),
+        el('option', { value: 'activa', selected: m0.estadoLesion === 'activa' }, 'Activa'),
+        el('option', { value: 'en_recuperacion', selected: m0.estadoLesion === 'en_recuperacion' }, 'En recuperación'),
+        el('option', { value: 'recuperado', selected: m0.estadoLesion === 'recuperado' }, 'Recuperado'),
+      ])]),
+    ]),
+  ]);
+  form.appendChild(fsLesion);
+
+  const fsGeneral = el('fieldset', {}, [
+    el('legend', {}, 'Antecedentes y salud general'),
+    el('div', { class: 'field' }, [el('label', {}, 'Antecedentes médicos'), el('textarea', { id: 'antecedentes', rows: 2 }, m0.antecedentes || '')]),
+    el('div', { class: 'form-row' }, [
+      el('div', { class: 'field' }, [el('label', {}, 'Alergias'), el('input', { id: 'alergias', value: m0.alergias || '' })]),
+      el('div', { class: 'field' }, [el('label', {}, 'Medicamentos actuales'), el('input', { id: 'medicamentos', value: m0.medicamentos || '' })]),
+    ]),
+    el('div', { class: 'field' }, [el('label', {}, 'Observaciones del médico'), el('textarea', { id: 'observaciones', rows: 3 }, m0.observaciones || '')]),
+  ]);
+  form.appendChild(fsGeneral);
+
+  const actions = el('div', { class: 'flex gap-12' }, [
+    el('button', { type: 'submit', class: 'btn btn-primary' }, isEdit ? 'Guardar cambios' : 'Guardar registro'),
+    el('button', { type: 'button', class: 'btn btn-outline', onClick: () => history.back() }, 'Cancelar'),
+  ]);
+  if (isEdit) {
+    actions.appendChild(
+      el('button', {
+        type: 'button', class: 'btn btn-danger', style: 'margin-left:auto;',
+        onClick: async () => {
+          if (confirmDialog('¿Eliminar este registro médico?')) {
+            await DB.deleteMedical(medicalId);
+            toast('Registro eliminado', 'success');
+            navigate('/medico');
+          }
+        },
+      }, 'Eliminar')
+    );
+  }
+  form.appendChild(actions);
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {
+      ...(isEdit ? { id: medicalId } : {}),
+      playerId: playerSelect.value,
+      fecha: document.getElementById('fecha').value,
+      tipo: tipoSelect.value,
+      aptitud: document.getElementById('aptitud').value,
+      proximaRevision: document.getElementById('proximaRevision').value,
+      lesionTipo: document.getElementById('lesionTipo').value.trim(),
+      lesionZona: document.getElementById('lesionZona').value.trim(),
+      tiempoRecuperacionDias: document.getElementById('tiempoRecuperacionDias').value,
+      estadoLesion: document.getElementById('estadoLesion').value,
+      antecedentes: document.getElementById('antecedentes').value.trim(),
+      alergias: document.getElementById('alergias').value.trim(),
+      medicamentos: document.getElementById('medicamentos').value.trim(),
+      observaciones: document.getElementById('observaciones').value.trim(),
+    };
+    if (isEdit) await DB.updateMedical(data);
+    else await DB.addMedical(data);
+    toast('Registro médico guardado', 'success');
+    navigate(`/jugadores/${data.playerId}`);
+  });
+
+  card.appendChild(form);
+  container.appendChild(card);
+}
+
+async function getMedicalById(id) {
+  const all = await DB.getAllMedical();
+  return all.find((m) => m.id === id) || null;
+}
+
+  return { renderMedicalList, renderMedicalForm };
+})();
+
+
+/* ===== modulo: js/views/nutrition.js ===== */
+const ViewNutrition = (function () {
+  const { DB } = DBMod;
+  const { el, formatDate, todayISO, calcIMC, clasificarIMC, toast, navigate, confirmDialog } = Utils;
+
+/* ============================================================
+   views/nutrition.js — Ficha nutricional: composición corporal,
+   plan alimenticio y seguimiento.
+   ============================================================ */
+
+
+
+async function renderNutritionList(container) {
+  const [records, players] = await Promise.all([DB.getAllNutrition(), DB.getAllPlayers()]);
+  const byId = Object.fromEntries(players.map((p) => [p.id, p]));
+
+  const card = el('div', { class: 'card' });
+  card.appendChild(
+    el('div', { class: 'card-header' }, [
+      el('h2', {}, `Ficha nutricional (${records.length} registros)`),
+      el('button', { class: 'btn btn-primary', onClick: () => navigate('/nutricion/nueva') }, '+ Nuevo registro'),
+    ])
+  );
+
+  if (!records.length) {
+    card.appendChild(
+      el('div', { class: 'empty-state' }, [
+        el('div', { class: 'icon' }, '🥗'),
+        el('p', {}, 'Aún no hay registros nutricionales.'),
+      ])
+    );
+    container.appendChild(card);
+    return;
+  }
+
+  const wrap = el('div', { class: 'table-wrap' });
+  const table = el('table', {}, [
+    el('thead', {}, el('tr', {}, ['Jugador', 'Fecha', 'Peso', 'Talla', 'IMC', ''].map((h) => el('th', {}, h)))),
+  ]);
+  const tbody = el('tbody');
+  records
+    .sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''))
+    .forEach((n) => {
+      const p = byId[n.playerId];
+      tbody.appendChild(
+        el('tr', { style: 'cursor:pointer;', onClick: () => navigate(`/nutricion/${n.id}/editar`) }, [
+          el('td', {}, p ? `${p.nombres} ${p.apellidos}` : '—'),
+          el('td', {}, formatDate(n.fecha)),
+          el('td', {}, n.peso ? `${n.peso} kg` : '—'),
+          el('td', {}, n.talla ? `${n.talla} cm` : '—'),
+          el('td', {}, n.imc != null ? `${n.imc} (${n.imcClasificacion})` : '—'),
+          el('td', { class: 'text-right' }, el('span', { class: 'btn-link' }, 'Ver →')),
+        ])
+      );
+    });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  card.appendChild(wrap);
+  container.appendChild(card);
+}
+
+async function renderNutritionForm(container, nutritionId, presetPlayerId) {
+  const isEdit = !!nutritionId;
+  const players = await DB.getAllPlayers();
+  const n0raw = isEdit ? await getNutritionById(nutritionId) : null;
+
+  if (!players.length) {
+    container.appendChild(
+      el('div', { class: 'card empty-state' }, [
+        el('p', {}, 'Registra al menos un jugador antes de crear una ficha nutricional.'),
+        el('button', { class: 'btn btn-primary', onClick: () => navigate('/jugadores/nuevo') }, '+ Nuevo jugador'),
+      ])
+    );
+    return;
+  }
+  if (isEdit && !n0raw) {
+    container.appendChild(el('div', { class: 'card' }, 'Registro no encontrado.'));
+    return;
+  }
+
+  const n0 = n0raw || {
+    playerId: presetPlayerId || players[0].id, fecha: todayISO(), peso: '', talla: '',
+    porcentajeGrasa: '', planAlimenticio: '', observacionesNutricionista: '', suplementacion: '', hidratacion: '',
+  };
+
+  const card = el('div', { class: 'card' });
+  card.appendChild(el('h2', {}, isEdit ? 'Editar registro nutricional' : 'Nuevo registro nutricional'));
+
+  const form = el('form', {});
+  const playerSelect = el('select', { id: 'playerId', required: true },
+    players.sort((a, b) => a.apellidos.localeCompare(b.apellidos)).map((p) =>
+      el('option', { value: p.id, selected: p.id === n0.playerId }, `${p.nombres} ${p.apellidos}`)
+    ));
+
+  form.appendChild(
+    el('div', { class: 'form-row' }, [
+      el('div', { class: 'field' }, [el('label', {}, 'Jugador *'), playerSelect]),
+      el('div', { class: 'field' }, [el('label', {}, 'Fecha *'), el('input', { id: 'fecha', type: 'date', required: true, value: n0.fecha })]),
+    ])
+  );
+
+  const pesoInput = el('input', { id: 'peso', type: 'number', step: '0.1', min: '0', value: n0.peso ?? '', placeholder: 'kg' });
+  const tallaInput = el('input', { id: 'talla', type: 'number', step: '0.1', min: '0', value: n0.talla ?? '', placeholder: 'cm' });
+  const imcOut = el('span', { class: 'badge badge-gray' }, n0.imc != null ? `${n0.imc} · ${n0.imcClasificacion}` : '—');
+  function updateIMC() {
+    const imc = calcIMC(Number(pesoInput.value), Number(tallaInput.value));
+    imcOut.textContent = imc != null ? `${imc} · ${clasificarIMC(imc)}` : '—';
+  }
+  pesoInput.addEventListener('input', updateIMC);
+  tallaInput.addEventListener('input', updateIMC);
+
+  form.appendChild(
+    el('div', { class: 'form-row' }, [
+      el('div', { class: 'field' }, [el('label', {}, 'Peso'), pesoInput]),
+      el('div', { class: 'field' }, [el('label', {}, 'Talla'), tallaInput]),
+      el('div', { class: 'field' }, [el('label', {}, '% grasa corporal (si se midió)'), el('input', { id: 'porcentajeGrasa', type: 'number', step: '0.1', min: '0', value: n0.porcentajeGrasa ?? '' })]),
+      el('div', { class: 'field' }, [el('label', {}, 'IMC (automático)'), imcOut]),
+    ])
+  );
+
+  form.appendChild(
+    el('div', { class: 'field' }, [el('label', {}, 'Plan alimenticio'), el('textarea', { id: 'planAlimenticio', rows: 3 }, n0.planAlimenticio || '')])
+  );
+  form.appendChild(
+    el('div', { class: 'form-row' }, [
+      el('div', { class: 'field' }, [el('label', {}, 'Suplementación'), el('input', { id: 'suplementacion', value: n0.suplementacion || '' })]),
+      el('div', { class: 'field' }, [el('label', {}, 'Hidratación / recomendaciones'), el('input', { id: 'hidratacion', value: n0.hidratacion || '' })]),
+    ])
+  );
+  form.appendChild(
+    el('div', { class: 'field' }, [el('label', {}, 'Observaciones del nutricionista'), el('textarea', { id: 'observacionesNutricionista', rows: 3 }, n0.observacionesNutricionista || '')])
+  );
+
+  const actions = el('div', { class: 'flex gap-12' }, [
+    el('button', { type: 'submit', class: 'btn btn-primary' }, isEdit ? 'Guardar cambios' : 'Guardar registro'),
+    el('button', { type: 'button', class: 'btn btn-outline', onClick: () => history.back() }, 'Cancelar'),
+  ]);
+  if (isEdit) {
+    actions.appendChild(
+      el('button', {
+        type: 'button', class: 'btn btn-danger', style: 'margin-left:auto;',
+        onClick: async () => {
+          if (confirmDialog('¿Eliminar este registro nutricional?')) {
+            await DB.deleteNutrition(nutritionId);
+            toast('Registro eliminado', 'success');
+            navigate('/nutricion');
+          }
+        },
+      }, 'Eliminar')
+    );
+  }
+  form.appendChild(actions);
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const peso = pesoInput.value ? Number(pesoInput.value) : null;
+    const talla = tallaInput.value ? Number(tallaInput.value) : null;
+    const imc = calcIMC(peso, talla);
+    const data = {
+      ...(isEdit ? { id: nutritionId } : {}),
+      playerId: playerSelect.value,
+      fecha: document.getElementById('fecha').value,
+      peso, talla, imc, imcClasificacion: clasificarIMC(imc),
+      porcentajeGrasa: document.getElementById('porcentajeGrasa').value || null,
+      planAlimenticio: document.getElementById('planAlimenticio').value.trim(),
+      suplementacion: document.getElementById('suplementacion').value.trim(),
+      hidratacion: document.getElementById('hidratacion').value.trim(),
+      observacionesNutricionista: document.getElementById('observacionesNutricionista').value.trim(),
+    };
+    if (isEdit) await DB.updateNutrition(data);
+    else await DB.addNutrition(data);
+    toast('Registro nutricional guardado', 'success');
+    navigate(`/jugadores/${data.playerId}`);
+  });
+
+  card.appendChild(form);
+  container.appendChild(card);
+}
+
+async function getNutritionById(id) {
+  const all = await DB.getAllNutrition();
+  return all.find((n) => n.id === id) || null;
+}
+
+  return { renderNutritionList, renderNutritionForm };
+})();
+
+
+/* ===== modulo: js/views/reports.js ===== */
+const ViewReports = (function () {
+  const { DB } = DBMod;
+  const { el, calcAge, navigate } = Utils;
+  const { CATEGORIAS } = Seed;
+
+/* ============================================================
+   views/reports.js — Reportes comparativos del equipo
+   ============================================================ */
+
+
+
+
+let barChartInstance = null;
+
+async function renderReports(container) {
+  const [players, evaluations, edadesCfg, posicionesCfg] = await Promise.all([
+    DB.getAllPlayers(),
+    DB.getAllEvaluations(),
+    DB.getConfig('categoriasEdad'),
+    DB.getConfig('posiciones'),
+  ]);
+  const edades = edadesCfg?.value || [];
+  const posiciones = posicionesCfg?.value || {};
+
+  // última evaluación por jugador
+  const lastByPlayer = {};
+  evaluations.forEach((ev) => {
+    const cur = lastByPlayer[ev.playerId];
+    if (!cur || (ev.fecha || '') > (cur.fecha || '')) lastByPlayer[ev.playerId] = ev;
+  });
+
+  const exportBtn = el('button', { class: 'btn btn-outline' }, '⬇️ Exportar CSV');
+  const card = el('div', { class: 'card' });
+  card.appendChild(
+    el('div', { class: 'card-header' }, [
+      el('h2', {}, 'Reportes del equipo'),
+      exportBtn,
+    ])
+  );
+
+  const catSelect = el('select', {}, [el('option', { value: '' }, 'Todas las categorías'), ...edades.map((c) => el('option', { value: c.key }, c.label))]);
+  const posSelect = el('select', {}, [el('option', { value: '' }, 'Todas las posiciones'), ...Object.entries(posiciones).map(([k, p]) => el('option', { value: k }, p.label))]);
+  const filterRow = el('div', { class: 'form-row', style: 'margin-bottom:16px;' }, [catSelect, posSelect]);
+  card.appendChild(filterRow);
+
+  const canvas = el('canvas', { height: '260' });
+  const chartCard = el('div', { class: 'chart-wrap', style: 'max-width:640px;' }, canvas);
+  card.appendChild(chartCard);
+
+  const wrap = el('div', { class: 'table-wrap mt-16' });
+  card.appendChild(wrap);
+  container.appendChild(card);
+
+  function getFiltered() {
+    const fc = catSelect.value;
+    const fp = posSelect.value;
+    return players.filter((p) => {
+      if (fc && p.categoriaEdad !== fc) return false;
+      if (fp && p.posicionPrincipal !== fp) return false;
+      return true;
+    });
+  }
+
+  function draw() {
+    const filtered = getFiltered();
+    const rows = filtered
+      .map((p) => ({ player: p, ev: lastByPlayer[p.id] }))
+      .sort((a, b) => (b.ev?.scoreFisicoGlobal ?? -1) - (a.ev?.scoreFisicoGlobal ?? -1));
+
+    wrap.innerHTML = '';
+    if (!rows.length) {
+      wrap.appendChild(el('div', { class: 'empty-state' }, el('p', {}, 'No hay jugadores que coincidan con el filtro.')));
+    } else {
+      const table = el('table', {}, [
+        el('thead', {}, el('tr', {}, ['#', 'Jugador', 'Posición', 'Última evaluación', 'Score global', 'Posición sugerida', ''].map((h) => el('th', {}, h)))),
+      ]);
+      const tbody = el('tbody');
+      rows.forEach((r, i) => {
+        const posLabel = posiciones[r.player.posicionPrincipal]?.label || '—';
+        tbody.appendChild(
+          el('tr', { style: 'cursor:pointer;', onClick: () => navigate(`/jugadores/${r.player.id}`) }, [
+            el('td', {}, String(i + 1)),
+            el('td', {}, `${r.player.nombres} ${r.player.apellidos}`),
+            el('td', {}, posLabel),
+            el('td', {}, r.ev ? r.ev.fecha : 'Sin evaluar'),
+            el('td', {}, r.ev?.scoreFisicoGlobal != null ? el('span', { class: 'badge badge-green' }, `${r.ev.scoreFisicoGlobal}/10`) : el('span', { class: 'badge badge-gray' }, 'N/D')),
+            el('td', {}, r.ev?.positionFit?.[0]?.label || '—'),
+            el('td', { class: 'text-right' }, el('span', { class: 'btn-link' }, 'Ver →')),
+          ])
+        );
+      });
+      table.appendChild(tbody);
+      wrap.appendChild(table);
+    }
+
+    // promedio por categoría (equipo filtrado)
+    const catKeys = Object.keys(CATEGORIAS);
+    const averages = catKeys.map((c) => {
+      const vals = rows.map((r) => r.ev?.categoryScores?.[c]).filter((v) => v !== null && v !== undefined);
+      return vals.length ? Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 10) / 10 : 0;
+    });
+
+    if (canvas && typeof Chart !== 'undefined') {
+      if (barChartInstance) barChartInstance.destroy();
+      barChartInstance = new Chart(canvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: catKeys.map((c) => CATEGORIAS[c]),
+          datasets: [{ label: 'Promedio del equipo (0-10)', data: averages, backgroundColor: '#22c55e' }],
+        },
+        options: { scales: { y: { min: 0, max: 10 } }, plugins: { legend: { display: false } } },
+      });
+    }
+  }
+
+  catSelect.addEventListener('change', draw);
+  posSelect.addEventListener('change', draw);
+  exportBtn.addEventListener('click', () => exportCSV(getFiltered(), lastByPlayer, posiciones));
+
+  draw();
+}
+
+function exportCSV(players, lastByPlayer, posiciones) {
+  const header = ['Nombres', 'Apellidos', 'Edad', 'Posición', 'Última evaluación', 'IMC', 'Score físico global', 'Posición sugerida'];
+  const rows = players.map((p) => {
+    const ev = lastByPlayer[p.id];
+    return [
+      p.nombres, p.apellidos, calcAge(p.fechaNacimiento) ?? '', posiciones[p.posicionPrincipal]?.label || '',
+      ev?.fecha || '', ev?.imc ?? '', ev?.scoreFisicoGlobal ?? '', ev?.positionFit?.[0]?.label || '',
+    ];
+  });
+  const csv = [header, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'reporte_equipo.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+  return { renderReports };
+})();
+
+
+/* ===== modulo: js/views/settings.js ===== */
+const ViewSettings = (function () {
+  const { DB } = DBMod;
+  const { el, toast, confirmDialog } = Utils;
+  const { CATEGORIAS, BAREMOS_SEED, POSICIONES_SEED, CATEGORIAS_EDAD_SEED, CLUB_INFO_SEED } = Seed;
+
+/* ============================================================
+   views/settings.js — Configuración: club, categorías de edad,
+   posiciones (pesos) y baremos (tablas de puntuación editables).
+   ============================================================ */
+
+
+
+
+async function renderSettings(container) {
+  const card = el('div', { class: 'card' });
+  card.appendChild(el('h2', {}, 'Configuración'));
+  card.appendChild(
+    el('p', { class: 'help-text' }, 'Todos los valores por defecto provienen del estudio y los protocolos de valoración del club. Ajusta lo que necesites; los cambios aplican a las próximas evaluaciones (las ya guardadas no se recalculan automáticamente).')
+  );
+
+  const tabs = el('div', { class: 'tabs' });
+  const btns = {
+    general: el('button', { class: 'tab-btn active' }, '🏟️ Club'),
+    edades: el('button', { class: 'tab-btn' }, '🎂 Categorías de edad'),
+    posiciones: el('button', { class: 'tab-btn' }, '📍 Posiciones'),
+    baremos: el('button', { class: 'tab-btn' }, '📐 Baremos'),
+  };
+  Object.values(btns).forEach((b) => tabs.appendChild(b));
+  card.appendChild(tabs);
+
+  const panels = {
+    general: el('div', {}),
+    edades: el('div', { style: 'display:none;' }),
+    posiciones: el('div', { style: 'display:none;' }),
+    baremos: el('div', { style: 'display:none;' }),
+  };
+  Object.values(panels).forEach((p) => card.appendChild(p));
+  function showTab(name) {
+    for (const k of Object.keys(panels)) {
+      panels[k].style.display = k === name ? '' : 'none';
+      btns[k].classList.toggle('active', k === name);
+    }
+  }
+  Object.entries(btns).forEach(([k, b]) => b.addEventListener('click', () => showTab(k)));
+
+  await buildGeneral(panels.general);
+  await buildEdades(panels.edades);
+  await buildPosiciones(panels.posiciones);
+  await buildBaremos(panels.baremos);
+
+  container.appendChild(card);
+}
+
+/* ---------------- Club ---------------- */
+async function buildGeneral(panel) {
+  const cfg = (await DB.getConfig('clubInfo'))?.value || CLUB_INFO_SEED;
+  const nombreInput = el('input', { id: 'nombreClub', value: cfg.nombreClub || '' });
+  panel.appendChild(
+    el('div', { class: 'field', style: 'max-width:400px;' }, [el('label', {}, 'Nombre del club / entidad deportiva'), nombreInput])
+  );
+  panel.appendChild(
+    el('button', {
+      class: 'btn btn-primary', onClick: async () => {
+        await DB.setConfig('clubInfo', { ...cfg, nombreClub: nombreInput.value.trim() });
+        toast('Datos del club actualizados', 'success');
+        const nameEl = document.getElementById('club-name');
+        if (nameEl) nameEl.textContent = nombreInput.value.trim();
+      },
+    }, 'Guardar')
+  );
+}
+
+/* ---------------- Categorías de edad ---------------- */
+async function buildEdades(panel) {
+  let edades = (await DB.getConfig('categoriasEdad'))?.value || CATEGORIAS_EDAD_SEED;
+  edades = edades.map((e) => ({ ...e }));
+
+  const wrap = el('div', { class: 'table-wrap' });
+  const table = el('table', {}, [el('thead', {}, el('tr', {}, ['Etiqueta', 'Edad mínima', 'Edad máxima', ''].map((h) => el('th', {}, h))))]);
+  const tbody = el('tbody');
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+
+  function draw() {
+    tbody.innerHTML = '';
+    edades.forEach((c, i) => {
+      const labelInput = el('input', { value: c.label });
+      const minInput = el('input', { type: 'number', value: c.min, style: 'width:80px;' });
+      const maxInput = el('input', { type: 'number', value: c.max, style: 'width:80px;' });
+      labelInput.addEventListener('input', () => (c.label = labelInput.value));
+      minInput.addEventListener('input', () => (c.min = Number(minInput.value)));
+      maxInput.addEventListener('input', () => (c.max = Number(maxInput.value)));
+      tbody.appendChild(
+        el('tr', {}, [
+          el('td', {}, labelInput),
+          el('td', {}, minInput),
+          el('td', {}, maxInput),
+          el('td', {}, el('button', {
+            class: 'btn btn-danger btn-sm', type: 'button',
+            onClick: () => { edades.splice(i, 1); draw(); },
+          }, 'Quitar')),
+        ])
+      );
+    });
+  }
+  draw();
+  panel.appendChild(wrap);
+
+  panel.appendChild(
+    el('div', { class: 'flex gap-8 mt-16' }, [
+      el('button', {
+        class: 'btn btn-outline', type: 'button',
+        onClick: () => { edades.push({ key: 'cat_' + Date.now(), label: 'Nueva categoría', min: 6, max: 8 }); draw(); },
+      }, '+ Agregar categoría'),
+      el('button', {
+        class: 'btn btn-primary', type: 'button',
+        onClick: async () => { await DB.setConfig('categoriasEdad', edades); toast('Categorías de edad guardadas', 'success'); },
+      }, 'Guardar cambios'),
+    ])
+  );
+}
+
+/* ---------------- Posiciones ---------------- */
+async function buildPosiciones(panel) {
+  let posiciones = (await DB.getConfig('posiciones'))?.value || POSICIONES_SEED;
+  posiciones = JSON.parse(JSON.stringify(posiciones));
+  const catKeys = Object.keys(CATEGORIAS);
+
+  const listWrap = el('div');
+  panel.appendChild(el('p', { class: 'help-text' }, 'El peso de cada categoría indica qué tanto influye en el índice de idoneidad para esa posición. No es obligatorio que sumen exactamente 1.0.'));
+  panel.appendChild(listWrap);
+
+  function draw() {
+    listWrap.innerHTML = '';
+    Object.entries(posiciones).forEach(([key, pos]) => {
+      const labelInput = el('input', { value: pos.label, style: 'font-weight:700; max-width:260px;' });
+      labelInput.addEventListener('input', () => (pos.label = labelInput.value));
+
+      const sumEl = el('span', { class: 'badge badge-gray' }, '');
+      function updateSum() {
+        const sum = catKeys.reduce((s, c) => s + (Number(pos.weights[c]) || 0), 0);
+        sumEl.textContent = `Suma: ${Math.round(sum * 100) / 100}`;
+      }
+
+      const weightInputs = catKeys.map((c) => {
+        const inp = el('input', { type: 'number', step: '0.05', min: '0', max: '1', value: pos.weights[c] ?? 0 });
+        inp.addEventListener('input', () => { pos.weights[c] = Number(inp.value); updateSum(); });
+        return el('div', { class: 'field' }, [el('label', {}, CATEGORIAS[c]), inp]);
+      });
+
+      updateSum();
+
+      listWrap.appendChild(
+        el('div', { class: 'card', style: 'box-shadow:none;' }, [
+          el('div', { class: 'flex-between' }, [
+            labelInput,
+            el('div', { class: 'flex gap-8' }, [
+              sumEl,
+              el('button', {
+                class: 'btn btn-danger btn-sm', type: 'button',
+                onClick: () => { delete posiciones[key]; draw(); },
+              }, 'Quitar posición'),
+            ]),
+          ]),
+          el('div', { class: 'form-row mt-8' }, weightInputs),
+        ])
+      );
+    });
+  }
+  draw();
+
+  panel.appendChild(
+    el('div', { class: 'flex gap-8 mt-16' }, [
+      el('button', {
+        class: 'btn btn-outline', type: 'button',
+        onClick: () => {
+          const key = 'pos_' + Date.now();
+          posiciones[key] = { label: 'Nueva posición', weights: Object.fromEntries(catKeys.map((c) => [c, 0])) };
+          draw();
+        },
+      }, '+ Agregar posición'),
+      el('button', {
+        class: 'btn btn-primary', type: 'button',
+        onClick: async () => { await DB.setConfig('posiciones', posiciones); toast('Posiciones guardadas', 'success'); },
+      }, 'Guardar cambios'),
+    ])
+  );
+}
+
+/* ---------------- Baremos ---------------- */
+async function buildBaremos(panel) {
+  let baremos = (await DB.getConfig('baremos'))?.value || BAREMOS_SEED;
+  baremos = JSON.parse(JSON.stringify(baremos));
+
+  const select = el('select', {}, Object.entries(baremos).map(([k, b]) => el('option', { value: k }, b.label)));
+  panel.appendChild(el('div', { class: 'field', style: 'max-width:400px;' }, [el('label', {}, 'Prueba física'), select]));
+
+  const gridHost = el('div', { class: 'table-wrap mt-16' });
+  panel.appendChild(gridHost);
+
+  function drawGrid() {
+    const key = select.value;
+    const baremo = baremos[key];
+    gridHost.innerHTML = '';
+    if (baremo.estimated) {
+      gridHost.appendChild(el('p', { class: 'badge badge-amber' }, 'Tabla estimada — se recomienda calibrar con datos reales del club.'));
+    }
+    const table = el('table');
+    const thead = el('thead', {}, el('tr', {}, [el('th', {}, 'Puntos'), ...baremo.table.ages.map((a) => el('th', {}, `${a} años`))]));
+    table.appendChild(thead);
+    const tbody = el('tbody');
+    baremo.table.points.forEach((pt, rowIdx) => {
+      const cells = baremo.table.ages.map((age) => {
+        const input = el('input', { type: 'number', step: 'any', value: baremo.table.values[age][rowIdx], style: 'width:80px;' });
+        input.addEventListener('input', () => { baremo.table.values[age][rowIdx] = Number(input.value); });
+        return el('td', {}, input);
+      });
+      tbody.appendChild(el('tr', {}, [el('td', {}, el('strong', {}, String(pt))), ...cells]));
+    });
+    table.appendChild(tbody);
+    gridHost.appendChild(table);
+  }
+  select.addEventListener('change', drawGrid);
+  drawGrid();
+
+  panel.appendChild(
+    el('div', { class: 'flex gap-8 mt-16' }, [
+      el('button', {
+        class: 'btn btn-primary', type: 'button',
+        onClick: async () => { await DB.setConfig('baremos', baremos); toast('Baremos guardados', 'success'); },
+      }, 'Guardar cambios de esta tabla'),
+      el('button', {
+        class: 'btn btn-outline', type: 'button',
+        onClick: () => {
+          if (confirmDialog('¿Restaurar todos los baremos a los valores originales del estudio del club?')) {
+            baremos = JSON.parse(JSON.stringify(BAREMOS_SEED));
+            drawGrid();
+          }
+        },
+      }, 'Restaurar valores originales'),
+    ])
+  );
+}
+
+  return { renderSettings };
+})();
+
+
+/* ===== modulo: js/views/importExport.js ===== */
+const ViewImportExport = (function () {
+  const { DB } = DBMod;
+  const { el, downloadJSON, toast, confirmDialog } = Utils;
+
+/* ============================================================
+   views/importExport.js — Copia de seguridad completa de la app
+   (todo vive en IndexedDB del navegador; esto es la única forma
+   de mover los datos a otro computador o navegador).
+   ============================================================ */
+
+
+
+async function renderBackup(container) {
+  const card = el('div', { class: 'card' });
+  card.appendChild(el('h2', {}, 'Copia de seguridad'));
+  card.appendChild(
+    el('div', { class: 'obs-box', style: 'background:#fef3c7; border-color:#fde68a; color:#78350f;' }, [
+      el('strong', {}, '⚠️ Importante: '),
+      'toda la información de esta aplicación (jugadores, fotos, evaluaciones, fichas médicas y nutricionales) se guarda ',
+      el('strong', {}, 'únicamente en este navegador, en este computador'),
+      '. Si limpias los datos del navegador, cambias de equipo o de navegador, perderás la información salvo que tengas un respaldo. Se recomienda exportar un respaldo periódicamente (por ejemplo, después de cada jornada de evaluaciones).',
+    ])
+  );
+
+  const stats = await getStats();
+  card.appendChild(
+    el('div', { class: 'grid grid-4 mt-16' }, [
+      stat(stats.players, 'Jugadores'),
+      stat(stats.evaluations, 'Evaluaciones'),
+      stat(stats.medical, 'Registros médicos'),
+      stat(stats.nutrition, 'Registros nutricionales'),
+    ])
+  );
+
+  card.appendChild(el('hr', { class: 'divider' }));
+
+  card.appendChild(el('h3', {}, 'Exportar respaldo'));
+  card.appendChild(el('p', { class: 'help-text' }, 'Descarga un archivo .json con toda la información. Guárdalo en un lugar seguro (nube, USB, etc).'));
+  card.appendChild(
+    el('button', {
+      class: 'btn btn-primary', onClick: async () => {
+        const data = await DB.exportAll();
+        const stamp = new Date().toISOString().slice(0, 10);
+        downloadJSON(data, `futbol-analytics-respaldo-${stamp}.json`);
+        toast('Respaldo descargado', 'success');
+      },
+    }, '⬇️ Descargar respaldo completo (.json)')
+  );
+
+  card.appendChild(el('hr', { class: 'divider' }));
+
+  card.appendChild(el('h3', {}, 'Restaurar / importar respaldo'));
+  card.appendChild(el('p', { class: 'help-text' }, 'Selecciona un archivo .json exportado previamente desde esta misma aplicación.'));
+  const modeSelect = el('select', { id: 'import-mode', style: 'max-width:320px;' }, [
+    el('option', { value: 'merge' }, 'Combinar con los datos actuales'),
+    el('option', { value: 'replace' }, 'Reemplazar todos los datos actuales'),
+  ]);
+  card.appendChild(el('div', { class: 'field', style: 'max-width:320px;' }, [el('label', {}, 'Modo de importación'), modeSelect]));
+
+  const fileInput = el('input', { type: 'file', accept: 'application/json' });
+  fileInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const replace = modeSelect.value === 'replace';
+    if (replace && !confirmDialog('Esto borrará todos los datos actuales y los reemplazará por los del archivo. ¿Continuar?')) {
+      fileInput.value = '';
+      return;
+    }
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      if (data._app !== 'futbol-analytics') {
+        if (!confirmDialog('Este archivo no parece un respaldo de Futbol Analytics. ¿Intentar importarlo de todas formas?')) return;
+      }
+      await DB.importAll(data, { replace });
+      toast('Datos importados correctamente', 'success');
+      setTimeout(() => window.location.reload(), 600);
+    } catch (err) {
+      console.error(err);
+      toast('No se pudo leer el archivo: ' + err.message, 'error');
+    }
+  });
+  card.appendChild(fileInput);
+
+  card.appendChild(el('hr', { class: 'divider' }));
+
+  card.appendChild(el('h3', {}, 'Zona de peligro'));
+  card.appendChild(
+    el('button', {
+      class: 'btn btn-danger', onClick: async () => {
+        if (confirmDialog('Esto elimina TODOS los jugadores, evaluaciones, fichas médicas, nutricionales y configuración. ¿Estás seguro? Esta acción no se puede deshacer.')) {
+          await DB.wipeAll();
+          toast('Todos los datos fueron eliminados', 'success');
+          setTimeout(() => window.location.reload(), 600);
+        }
+      },
+    }, '🗑️ Borrar todos los datos de la aplicación')
+  );
+
+  container.appendChild(card);
+}
+
+function stat(value, label) {
+  return el('div', { class: 'stat-card' }, [el('div', { class: 'stat-value' }, String(value)), el('div', { class: 'stat-label' }, label)]);
+}
+
+async function getStats() {
+  const [players, evaluations, medical, nutrition] = await Promise.all([
+    DB.getAllPlayers(), DB.getAllEvaluations(), DB.getAllMedical(), DB.getAllNutrition(),
+  ]);
+  return { players: players.length, evaluations: evaluations.length, medical: medical.length, nutrition: nutrition.length };
+}
+
+  return { renderBackup };
+})();
+
+
+/* ===== modulo: js/app.js ===== */
+(function () {
+  const { DB } = DBMod;
+  const { seedIfEmpty } = Seed;
+  const { toast, navigate } = Utils;
+  const { renderDashboard } = ViewDashboard;
+  const { renderPlayersList, renderPlayerForm } = ViewPlayers;
+  const { renderPlayerProfile } = ViewPlayerProfile;
+  const { renderEvaluationsList, renderEvaluationForm, renderEvaluationDetail } = ViewEvaluation;
+  const { renderMedicalList, renderMedicalForm } = ViewMedical;
+  const { renderNutritionList, renderNutritionForm } = ViewNutrition;
+  const { renderReports } = ViewReports;
+  const { renderSettings } = ViewSettings;
+  const { renderBackup } = ViewImportExport;
+
+/* ============================================================
+   app.js — Punto de entrada, router hash-based y navegación
+   ============================================================ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+const app = document.getElementById('app');
+const pageTitle = document.getElementById('page-title');
+const nav = document.getElementById('main-nav');
+
+const TITLES = {
+  dashboard: 'Panel general',
+  jugadores: 'Jugadores',
+  evaluaciones: 'Evaluaciones físicas',
+  medico: 'Ficha médica',
+  nutricion: 'Ficha nutricional',
+  reportes: 'Reportes',
+  configuracion: 'Configuración',
+  backup: 'Copia de seguridad',
+};
+
+function setActiveNav(section) {
+  nav.querySelectorAll('a').forEach((a) => {
+    a.classList.toggle('active', a.dataset.route === section);
+  });
+  pageTitle.textContent = TITLES[section] || 'Futbol Analytics';
+  document.title = `${TITLES[section] || ''} · Futbol Analytics`;
+}
+
+// Token de renderizado: evita que una navegación en curso (que aún espera
+// datos de IndexedDB) sobrescriba a una navegación posterior más reciente,
+// y evita duplicar contenido si el evento hashchange llega más de una vez.
+let renderToken = 0;
+
+async function router() {
+  const myToken = ++renderToken;
+
+  const rawHash = window.location.hash.replace(/^#/, '') || '/dashboard';
+  const hash = rawHash.split('?')[0]; // separar la ruta de los parámetros de consulta (?player=...)
+  const parts = hash.split('/').filter(Boolean);
+  const section = parts[0] || 'dashboard';
+
+  // Se construye en un contenedor separado (fuera del DOM visible) y sólo
+  // se intercambia con el contenido real si esta sigue siendo la navegación
+  // más reciente una vez resueltas las promesas.
+  const buffer = document.createElement('div');
+  setActiveNav(section);
+
+  try {
+    switch (section) {
+      case 'dashboard':
+        await renderDashboard(buffer);
+        break;
+
+      case 'jugadores':
+        if (parts[1] === 'nuevo') await renderPlayerForm(buffer, null);
+        else if (parts[2] === 'editar') await renderPlayerForm(buffer, parts[1]);
+        else if (parts[1]) await renderPlayerProfile(buffer, parts[1]);
+        else await renderPlayersList(buffer);
+        break;
+
+      case 'evaluaciones':
+        if (parts[1] === 'nueva') await renderEvaluationForm(buffer, null, getQueryParam('player'));
+        else if (parts[2] === 'editar') await renderEvaluationForm(buffer, parts[1], null);
+        else if (parts[1]) await renderEvaluationDetail(buffer, parts[1]);
+        else await renderEvaluationsList(buffer);
+        break;
+
+      case 'medico':
+        if (parts[1] === 'nueva') await renderMedicalForm(buffer, null, getQueryParam('player'));
+        else if (parts[2] === 'editar') await renderMedicalForm(buffer, parts[1], null);
+        else await renderMedicalList(buffer);
+        break;
+
+      case 'nutricion':
+        if (parts[1] === 'nueva') await renderNutritionForm(buffer, null, getQueryParam('player'));
+        else if (parts[2] === 'editar') await renderNutritionForm(buffer, parts[1], null);
+        else await renderNutritionList(buffer);
+        break;
+
+      case 'reportes':
+        await renderReports(buffer);
+        break;
+
+      case 'configuracion':
+        await renderSettings(buffer);
+        break;
+
+      case 'backup':
+        await renderBackup(buffer);
+        break;
+
+      default:
+        buffer.innerHTML = '<div class="card">Página no encontrada.</div>';
+    }
+  } catch (err) {
+    console.error(err);
+    buffer.innerHTML = `<div class="card"><h3>Ocurrió un error al cargar esta sección</h3><p class="muted">${err.message}</p></div>`;
+  }
+
+  // Si mientras se esperaban los datos el usuario navegó a otra ruta,
+  // se descarta este resultado desactualizado.
+  if (myToken !== renderToken) return;
+  app.innerHTML = '';
+  app.appendChild(buffer);
+}
+
+function getQueryParam(name) {
+  const hash = window.location.hash;
+  const qIndex = hash.indexOf('?');
+  if (qIndex === -1) return null;
+  const params = new URLSearchParams(hash.slice(qIndex + 1));
+  return params.get(name);
+}
+
+async function init() {
+  await seedIfEmpty(DB);
+
+  const club = await DB.getConfig('clubInfo');
+  if (club?.value?.nombreClub) {
+    document.getElementById('club-name').textContent = club.value.nombreClub;
+  }
+
+  window.addEventListener('hashchange', router);
+  router();
+
+  document.getElementById('menu-toggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+
+  document.getElementById('quick-add-player').addEventListener('click', () => {
+    navigate('/jugadores/nuevo');
+  });
+
+  nav.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('open');
+  });
+}
+
+window.futbolAnalytics = { DB, navigate, toast };
+
+init();
+})();
+
+</script>
 </body>
 </html>
