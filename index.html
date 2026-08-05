@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Futbol Analytics · Gestión y análisis de jugadores</title>
+<meta name="description" content="Plataforma para gestionar jugadores, pruebas físicas, ficha médica y nutricional, y perfilamiento por posición." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <span class="brand-icon">⚽</span>
+        <div>
+          <div class="brand-title">Futbol Analytics</div>
+          <div class="brand-sub" id="club-name">Club Deportivo</div>
+        </div>
+      </div>
+
+      <nav class="nav" id="main-nav">
+        <a href="#/dashboard" data-route="dashboard">📊 Panel general</a>
+        <a href="#/jugadores" data-route="jugadores">🧑‍🤝‍🧑 Jugadores</a>
+        <a href="#/evaluaciones" data-route="evaluaciones">🏃 Evaluaciones físicas</a>
+        <a href="#/medico" data-route="medico">🩺 Ficha médica</a>
+        <a href="#/nutricion" data-route="nutricion">🥗 Ficha nutricional</a>
+        <a href="#/reportes" data-route="reportes">📈 Reportes</a>
+        <a href="#/configuracion" data-route="configuracion">⚙️ Configuración</a>
+        <a href="#/backup" data-route="backup">💾 Copia de seguridad</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p>Datos guardados solo en este navegador.</p>
+        <a href="#/backup" class="btn-link">Hacer respaldo →</a>
+      </div>
+    </aside>
+
+    <div class="main-col">
+      <header class="topbar">
+        <button id="menu-toggle" class="icon-btn" aria-label="Menú">☰</button>
+        <div class="topbar-title" id="page-title">Panel general</div>
+        <div class="topbar-actions">
+          <button id="quick-add-player" class="btn btn-primary btn-sm">+ Nuevo jugador</button>
+        </div>
+      </header>
+
+      <main id="app" class="app-content"></main>
+    </div>
+  </div>
+
+  <div id="toast-host"></div>
+  <div id="modal-host"></div>
+
+  <!-- Librerías externas (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

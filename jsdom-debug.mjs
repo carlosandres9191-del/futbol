@@ -1,0 +1,24 @@
+import 'fake-indexeddb/auto';
+import { JSDOM } from 'jsdom';
+import fs from 'fs';
+const html = fs.readFileSync('./index.html', 'utf-8');
+const dom = new JSDOM(html, { url: 'http://localhost:8123/index.html', runScripts: 'outside-only', resources: 'usable', pretendToBeVisual: true });
+global.window = dom.window;
+global.document = dom.window.document;
+try { Object.defineProperty(global, 'navigator', { value: dom.window.navigator, configurable: true }); } catch {}
+global.indexedDB = dom.window.indexedDB || global.indexedDB;
+global.HTMLElement = dom.window.HTMLElement;
+global.CustomEvent = dom.window.CustomEvent;
+global.FileReader = dom.window.FileReader;
+global.Blob = dom.window.Blob;
+global.URL = dom.window.URL;
+dom.window.Chart = class { constructor(){} destroy(){} };
+dom.window.addEventListener('error', (e) => console.log('[window error]', e.error?.stack || e.message));
+process.on('unhandledRejection', (e) => console.log('[unhandledRejection]', e?.stack||e));
+await import('./js/app.js');
+await new Promise(r=>setTimeout(r,300));
+dom.window.location.hash = '#/jugadores/nuevo';
+dom.window.dispatchEvent(new dom.window.Event('hashchange'));
+await new Promise(r=>setTimeout(r,600));
+console.log('APP HTML LEN', document.getElementById('app').innerHTML.length);
+console.log(document.getElementById('app').innerHTML.slice(0,800));
